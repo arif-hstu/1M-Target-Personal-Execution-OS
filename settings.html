@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#091018"><title>1M Target — Settings</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="css/app.css"></head>
+<body><div class="shell">
+  <div class="topbar"><a class="brand" href="index.html"><span class="brandmark">1M</span><span>1M Target<small>Personal Execution OS</small></span></a><nav class="nav"><a href="index.html">Today</a><a href="timeline.html">Roadmap</a><a href="review.html">Review</a><a class="active" href="settings.html">Settings</a></nav></div>
+  <section class="hero"><div class="heroMain"><div class="eyebrow">Local Configuration</div><h1>Settings & Overrides</h1><p class="muted">Change the estimated Head Teacher exam dates when the official BPSC schedule is known. The dynamic routine will update immediately.</p></div><div class="heroSide"><div class="eyebrow">Privacy</div><div class="big">Browser-local</div><div class="sub">These overrides are stored in localStorage, not committed to GitHub.</div></div></section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Head Teacher Exam</h2>
+      <div class="formGrid">
+        <div class="field"><label>Exam start date</label><input id="examStart" type="date"></div>
+        <div class="field"><label>Exam end date</label><input id="examEnd" type="date"></div>
+      </div>
+      <label class="gateItem" style="margin-top:10px"><input id="examConfirmed" type="checkbox"><span><b>Official schedule confirmed</b><small>Tick only after you verify the official BPSC schedule.</small></span></label>
+      <div class="notice" style="margin-top:10px">Changing the exam date updates exam-related routine boundaries. Long-term Blender/Year 1/Year 2/Year 3 roadmap dates remain the supplied roadmap dates unless you edit the source data files.</div>
+    </section>
+
+    <section class="card">
+      <h2>Phase Control</h2>
+      <div class="field"><label>Current phase mode</label><select id="phaseOverride"><option value="auto">Automatic by date</option></select></div>
+      <div class="sourceNote" style="margin-top:8px">Use a manual override only for unusual real-world changes. Automatic mode is preferred.</div>
+      <h2 style="margin-top:18px">Recovery Rule</h2>
+      <div class="callout good"><b>Saturday evening is fixed as the protected recovery block</b> while the 7-day office pattern continues. This matches the final routine supplied for this project.</div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:14px">
+    <h2>Current 7-Day Office Backbone</h2>
+    <div class="formGrid">
+      <div class="field"><label>Wake time</label><input id="wakeTime" type="text"></div>
+      <div class="field"><label>Sleep target</label><input id="sleepTime" type="text"></div>
+      <div class="field"><label>Office start</label><input id="officeStart" type="text"></div>
+      <div class="field"><label>Office end</label><input id="officeEnd" type="text"></div>
+    </div>
+    <div class="sourceNote" style="margin-top:9px">These fields document your working pattern for future edits. Version 1 preserves the tested 05:45 / 08:00–17:00 / 22:30 backbone in the routine templates.</div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2>Save / Reset</h2>
+    <div class="controls"><button class="btn primary" id="saveSettings">Save settings</button><button class="btn danger" id="resetSettings">Reset settings to roadmap defaults</button><span id="status" class="saveStatus"></span></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2>GitHub Pages Privacy Note</h2>
+    <div class="notice privacy">Anything committed to a public GitHub repository can be read by other people. This project deliberately keeps optional cash, debt and review entries in browser storage rather than in the repository. Do not hard-code private balances, passwords, tokens, account numbers or confidential family information into these files.</div>
+  </section>
+
+  <footer class="footer"><span>Settings affect this browser/device only.</span><span>For cross-device settings/progress sync, a backend can be added later.</span></footer>
+</div>
+<script src="data/settings.js"></script><script src="data/milestones.js"></script><script src="data/roadmap.js"></script><script src="data/routines.js"></script><script src="js/date-utils.js"></script><script src="js/storage.js"></script><script src="js/phase-engine.js"></script><script src="js/settings-page.js"></script></body></html>

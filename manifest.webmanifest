@@ -1,0 +1,12 @@
+{
+  "name": "1M Target — Personal Execution OS",
+  "short_name": "1M Target",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#091018",
+  "theme_color": "#091018",
+  "description": "Dynamic three-year execution dashboard driven by roadmap phases and dates.",
+  "icons": [
+    {"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

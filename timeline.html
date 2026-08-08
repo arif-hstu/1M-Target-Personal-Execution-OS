@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#091018">
+  <title>1M Target — Roadmap</title>
+  <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brandmark">1M</span><span>1M Target<small>Personal Execution OS</small></span></a>
+    <nav class="nav"><a href="index.html">Today</a><a class="active" href="timeline.html">Roadmap</a><a href="review.html">Review</a><a href="settings.html">Settings</a></nav>
+  </div>
+
+  <section class="hero">
+    <div class="heroMain">
+      <div class="eyebrow">7 Aug 2026 → 6 Aug 2029</div>
+      <h1>Dynamic Execution Roadmap</h1>
+      <p class="muted">The roadmap view resolves the same exam-date setting used by the daily routine. Current/selected dates are highlighted automatically.</p>
+      <div class="controls"><label class="field"><span class="muted" style="font-size:10px;font-weight:800">VIEW DATE</span><input type="date" id="viewDate"></label><button class="btn primary" id="todayBtn">Today</button><button class="btn" onclick="window.print()">Print</button></div>
+    </div>
+    <div class="heroSide"><div class="eyebrow">Current Position</div><div class="big" id="currentPhase">—</div><div class="sub" id="currentDate">—</div><div style="margin-top:10px"><span id="statusBadge" class="badge good">AUTO</span></div></div>
+  </section>
+
+  <section class="card" style="margin-bottom:14px">
+    <h2>Three-Year Bands</h2>
+    <div class="yearCards" id="yearCards"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Strategic Phases</h2>
+      <div class="timelineTracks" id="phaseList"></div>
+    </section>
+    <section class="card">
+      <h2>Key Milestones</h2>
+      <div class="milestones" id="milestones"></div>
+      <div class="notice" style="margin-top:12px">Dates marked as targets, scenarios, assumptions or conditional items are not guarantees. The official Head Teacher/BPSC schedule overrides the estimated exam dates.</div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:14px">
+    <h2>Focus-Area Timeline</h2>
+    <div class="timelineTracks" id="tracks"></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2>Cash Hierarchy</h2>
+    <ol class="list" id="cashHierarchy"></ol>
+  </section>
+
+  <footer class="footer"><span>Source-aware dynamic roadmap</span><span><a href="legacy/Execution_Timeline_Reference.html">Open supplied static timeline reference</a></span></footer>
+</div>
+<script src="data/settings.js"></script><script src="data/milestones.js"></script><script src="data/roadmap.js"></script><script src="data/routines.js"></script><script src="js/date-utils.js"></script><script src="js/storage.js"></script><script src="js/phase-engine.js"></script><script src="js/timeline.js"></script>
+</body></html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Personal Execution Timeline</title>
+<style>
+  :root{
+    --ink:#0f1837;
+    --muted:#536078;
+    --line:#cfd6e3;
+    --career:#2e8b3d; --career-bg:#eaf7e8;
+    --blender:#2366d1; --blender-bg:#eaf2ff;
+    --ariscope:#f07a00; --ariscope-bg:#fff2df;
+    --tech:#7a46c8; --tech-bg:#f2eafd;
+    --debt:#e14444; --debt-bg:#ffeaea;
+    --habits:#0f8f9a; --habits-bg:#e4f7f8;
+    --year1:#16753a; --year1-bg:#e8f5eb;
+    --year2:#1b5dbb; --year2-bg:#eaf2ff;
+    --year3:#5b248d; --year3-bg:#f4ecfb;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#eef2f7;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  body{padding:22px}
+  .toolbar{max-width:1780px;margin:0 auto 12px;display:flex;justify-content:flex-end;gap:10px}
+  .toolbar button{border:1px solid #9aa7bd;background:#fff;color:#17233f;border-radius:8px;padding:9px 13px;font-weight:700;cursor:pointer}
+  .poster{
+    width:min(1780px,100%); margin:0 auto; background:#fff; border:1px solid #d8deea;
+    box-shadow:0 8px 26px rgba(24,37,66,.08); border-radius:12px; overflow:hidden;
+  }
+  .pad{padding:22px 26px 18px}
+  header{text-align:center;padding-bottom:12px}
+  h1{font-size:38px;line-height:1.08;margin:0 0 6px;font-weight:800;letter-spacing:-.5px}
+  .subtitle{font-size:22px;color:#4e576b;font-weight:600}
+  .year-grid,.roadmap-row,.axis-row{display:grid;grid-template-columns:215px 1fr;gap:0}
+  .focus-head{font-weight:800;font-size:16px;display:flex;align-items:end;padding:0 12px 12px 4px;border-right:2px solid #e05252}
+  .years{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 0 10px 12px}
+  .year{text-align:center;font-weight:800;border-bottom:3px solid currentColor;padding:0 6px 9px}
+  .year strong{display:block;font-size:19px}
+  .year span{display:block;font-size:14px;margin-top:4px}
+  .y1{color:var(--year1)} .y2{color:var(--year2)} .y3{color:var(--year3)}
+  .roadmap-row{border-top:1px dotted #bfc7d4;min-height:84px}
+  .row-label{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 4px;border-right:2px solid #e05252;font-weight:800;font-size:17px;line-height:1.25}
+  .row-label small{display:block;font-size:13px;font-weight:700;margin-top:3px}
+  .ico{flex:0 0 40px;width:40px;height:40px;border:2px solid currentColor;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:15px;background:#fff}
+  .career{color:var(--career)} .blender{color:var(--blender)} .ariscope{color:#c65400}.tech{color:#5c2ca3}.debt{color:#c52323}.habits{color:#0b6670}
+  .track{position:relative;display:grid;grid-template-columns:repeat(36,1fr);gap:6px;padding:10px 10px 10px 12px;background-image:linear-gradient(to right,rgba(60,80,110,.10) 1px,transparent 1px);background-size:calc(100%/36) 100%;overflow:visible}
+  .task{min-width:0;border:1.5px solid;border-radius:8px;padding:8px 7px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;line-height:1.15;font-weight:800;font-size:13px;box-shadow:inset 0 0 18px rgba(255,255,255,.65)}
+  .task .date{font-size:12px;margin-top:5px;font-weight:700;color:#26324a}
+  .t-career{border-color:#6eb76b;background:linear-gradient(90deg,#eef9eb,#dff3df)}
+  .t-blender{border-color:#5e8fe3;background:linear-gradient(90deg,#edf4ff,#dce9ff);color:#184c9c}
+  .t-ariscope{border-color:#f2a447;background:linear-gradient(90deg,#fff4e5,#ffe8c5);color:#b74600}
+  .t-tech{border-color:#9f7ad7;background:linear-gradient(90deg,#f5effd,#eadcfa);color:#4b247e}
+  .t-debt{border-color:#ef7b7b;background:linear-gradient(90deg,#fff0f0,#ffdede);color:#b71f1f}
+  .t-habits{border-color:#4cb8c0;background:linear-gradient(90deg,#eaf9fa,#d8f3f5);color:#075f68}
+  .axis-row{border-top:2px solid #111b3a;margin-top:2px}
+  .axis-title{font-weight:800;padding:14px 12px 0 4px}
+  .axis{position:relative;height:118px;margin-left:12px}
+  .axis:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:#111b3a}
+  .tick{position:absolute;top:-5px;transform:translateX(-50%);text-align:center;font-size:12px;font-weight:700;color:#19223b;white-space:nowrap}
+  .tick:before{content:"";display:block;width:10px;height:10px;background:#111b3a;border-radius:50%;margin:0 auto 8px}
+  .tick.major:before{width:18px;height:18px;margin-top:-4px}
+  .tick.start{color:#c81818}.tick.start:before{background:#c81818}
+  .tick.y1m{color:#1c62c5}.tick.y1m:before{background:#1c62c5}
+  .tick.debtm{color:#d33}.tick.debtm:before{background:#d33}
+  .tick.finish{color:#5b248d}.tick.finish:before{background:#5b248d}
+  .milestone{position:absolute;top:52px;transform:translateX(-50%);border:1.5px solid;border-radius:8px;background:#fff;padding:8px 10px;font-size:12px;line-height:1.25;text-align:center;font-weight:800;min-width:125px;max-width:170px}
+  .milestone:before{content:"";position:absolute;left:50%;top:-42px;height:42px;border-left:1.5px dashed currentColor}
+  .m-career{color:var(--career)}.m-blender{color:var(--blender)}.m-y1{color:#1b5dbb}.m-debt{color:#d33}.m-finish{color:#5b248d}
+  .bottom{display:grid;grid-template-columns:1.05fr 1.15fr 1.15fr;gap:14px;padding-top:8px}
+  .panel{border:1.5px solid #8290a8;border-radius:10px;padding:13px 16px;min-height:135px}
+  .panel h3{margin:0 0 8px;font-size:18px;display:flex;gap:8px;align-items:center}
+  .panel ul{margin:0;padding-left:20px;font-size:13px;line-height:1.55}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;font-size:13px}
+  .legend-item{display:flex;align-items:center;gap:9px;font-weight:700}
+  .swatch{width:24px;height:14px;border:2px solid;border-radius:2px}
+  .footnote{font-size:11px;color:#6a7489;margin-top:10px;text-align:right}
+  @media (max-width:1100px){
+    body{padding:8px}.poster{min-width:1220px}.toolbar{min-width:1220px}
+  }
+  @media print{
+    body{background:#fff;padding:0}
+    .toolbar{display:none!important}
+    .poster{width:100%;max-width:none;border:0;box-shadow:none;border-radius:0}
+    .pad{padding:8mm}
+    h1{font-size:24pt}.subtitle{font-size:14pt}
+    .row-label{font-size:10pt}.task{font-size:8.4pt}.task .date{font-size:7.8pt}
+    .panel{break-inside:avoid}.roadmap-row{break-inside:avoid}
+    @page{size:landscape;margin:6mm}
+  }
+</style>
+</head>
+<body>
+<div class="toolbar" aria-label="Document controls">
+  <button onclick="window.print()">Print / Save as PDF</button>
+</div>
+<main class="poster" role="document" aria-label="Personal 3-Year Execution Timeline">
+  <div class="pad">
+    <header>
+      <h1>Personal Execution Timeline</h1>
+      <div class="subtitle">3-Year Roadmap to Debt-Free + ৳10,00,000 Liquid Cash</div>
+    </header>
+
+    <section class="year-grid" aria-label="Year bands">
+      <div class="focus-head">FOCUS AREA</div>
+      <div class="years">
+        <div class="year y1"><strong>YEAR 1 (Foundation &amp; Launch)</strong><span>7 Aug 2026 – 6 Aug 2027</span></div>
+        <div class="year y2"><strong>YEAR 2 (Scale &amp; Accelerate)</strong><span>7 Aug 2027 – 6 Aug 2028</span></div>
+        <div class="year y3"><strong>YEAR 3 (Achieve &amp; Consolidate)</strong><span>7 Aug 2028 – 6 Aug 2029</span></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label career"><span class="ico">C</span><span>Career &amp;<br>Examination</span></div>
+      <div class="track">
+        <div class="task t-career" style="grid-column:1 / 3">Head Teacher Exam Preparation<div class="date">7 Aug – 6 Oct 2026</div></div>
+        <div class="task t-career" style="grid-column:3 / 4">Exam<div class="date">7–8 Oct 2026</div></div>
+        <div class="task t-career" style="grid-column:4 / 9">Result &amp; Joining (If Selected)<div class="date">Nov 2026 – Mar 2027</div></div>
+        <div class="task t-career" style="grid-column:25 / 37">Perform, Grow &amp; Build Stability<div class="date">7 Aug 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label blender"><span class="ico">B</span><span>Blender Business<br>(Services)</span></div>
+      <div class="track">
+        <div class="task t-blender" style="grid-column:1 / 5">Skill Upgrade + Portfolio Building<div class="date">7 Aug – 6 Dec 2026</div></div>
+        <div class="task t-blender" style="grid-column:5 / 9">Client Acquisition<br>&amp; First Projects<div class="date">7 Dec 2026 – 6 Apr 2027</div></div>
+        <div class="task t-blender" style="grid-column:9 / 25">Scale Projects &amp; Increase Pricing<div class="date">7 Apr 2027 – 6 Aug 2028</div></div>
+        <div class="task t-blender" style="grid-column:25 / 37">High-Ticket Clients &amp; Team Leverage<div class="date">7 Aug 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label ariscope"><span class="ico">▶</span><span>Ariscope YouTube<br>&amp; Digital Products</span></div>
+      <div class="track">
+        <div class="task t-ariscope" style="grid-column:1 / 5">Content System Setup<br>(2 Long + 2–3 Shorts/Month)<div class="date">7 Aug – 6 Dec 2026</div></div>
+        <div class="task t-ariscope" style="grid-column:5 / 9">Monetization Start<br>&amp; First Digital Product<div class="date">7 Dec 2026 – 6 Apr 2027</div></div>
+        <div class="task t-ariscope" style="grid-column:9 / 25">Grow Audience &amp; Product Line<div class="date">7 Apr 2027 – 6 Aug 2028</div></div>
+        <div class="task t-ariscope" style="grid-column:25 / 37">Scale Revenue (YouTube + Products)<div class="date">7 Aug 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label tech"><span class="ico">T</span><span>Tech Services<small>(ERPNext, Dashboards<br>&amp; Automation)</small></span></div>
+      <div class="track">
+        <div class="task t-tech" style="grid-column:1 / 5">Service Packaging<br>&amp; Case Studies<div class="date">7 Aug – 6 Dec 2026</div></div>
+        <div class="task t-tech" style="grid-column:5 / 9">First Clients &amp; Delivery<div class="date">7 Dec 2026 – 6 Apr 2027</div></div>
+        <div class="task t-tech" style="grid-column:9 / 25">Recurring Clients &amp; Retainers<div class="date">7 Apr 2027 – 6 Aug 2028</div></div>
+        <div class="task t-tech" style="grid-column:25 / 37">Scale &amp; Systemize Service Business<div class="date">7 Aug 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label debt"><span class="ico">৳</span><span>Debt Repayment<br>&amp; Cash Goal</span></div>
+      <div class="track">
+        <div class="task t-debt" style="grid-column:1 / 9">Reduce High-Interest Debt<br>Aggressively<div class="date">7 Aug – 6 Apr 2027</div></div>
+        <div class="task t-debt" style="grid-column:9 / 19">Clear Remaining Debt<br>&amp; Build Emergency Cash<div class="date">7 Apr 2027 – 6 Feb 2028</div></div>
+        <div class="task t-debt" style="grid-column:19 / 37">Build ৳10,00,000 Liquid Cash<br>(Along with Investments)<div class="date">7 Feb 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="roadmap-row">
+      <div class="row-label habits"><span class="ico">H</span><span>Habits &amp; Personal<br>Development</span></div>
+      <div class="track">
+        <div class="task t-habits" style="grid-column:1 / 13">Daily Routine, Deep Work, Exercise, No Porn, Reading<div class="date">7 Aug 2026 – 6 Aug 2027</div></div>
+        <div class="task t-habits" style="grid-column:13 / 25">Strengthen Discipline &amp; Advanced Learning<div class="date">7 Aug 2027 – 6 Aug 2028</div></div>
+        <div class="task t-habits" style="grid-column:25 / 37">Leadership, Mentoring &amp; Long-Term Vision<div class="date">7 Aug 2028 – 6 Aug 2029</div></div>
+      </div>
+    </section>
+
+    <section class="axis-row" aria-label="Timeline milestones">
+      <div class="axis-title">TIMELINE</div>
+      <div class="axis">
+        <div class="tick major start" style="left:0%">7 Aug 2026<br>(Start)</div>
+        <div class="tick" style="left:8.3%">6 Oct 2026</div>
+        <div class="tick" style="left:16.6%">6 Dec 2026</div>
+        <div class="tick" style="left:25%">6 Feb 2027</div>
+        <div class="tick" style="left:33.3%">6 Apr 2027</div>
+        <div class="tick" style="left:41.6%">6 Jun 2027</div>
+        <div class="tick major y1m" style="left:50%">6 Aug 2027</div>
+        <div class="tick" style="left:58.3%">6 Oct 2027</div>
+        <div class="tick" style="left:66.6%">6 Dec 2027</div>
+        <div class="tick major debtm" style="left:75%">6 Feb 2028</div>
+        <div class="tick" style="left:83.3%">6 Apr 2028</div>
+        <div class="tick" style="left:91.6%">6 Jun 2028</div>
+        <div class="tick major finish" style="left:100%">6 Aug 2029<br>(Finish)</div>
+
+        <div class="milestone m-career" style="left:8.3%">Head Teacher<br>Exam</div>
+        <div class="milestone m-blender" style="left:33.3%">Blender Business<br>Stable Start</div>
+        <div class="milestone m-y1" style="left:50%">Year 1 Review<br>Foundation Strong</div>
+        <div class="milestone m-debt" style="left:75%">Debt Cleared<br>Emergency Fund Ready</div>
+        <div class="milestone m-finish" style="left:100%">৳10,00,000<br>Liquid Cash Goal</div>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="panel">
+        <h3>★ Key Milestones</h3>
+        <ul>
+          <li>Oct 2026: Head Teacher Exam Completed</li>
+          <li>Apr 2027: Blender Freelancing Stable Start</li>
+          <li>Aug 2027: Strong Foundation Review</li>
+          <li>Feb 2028: All Debt Cleared + Emergency Fund Ready</li>
+          <li>Aug 2029: ৳10,00,000 Liquid Cash Achieved</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>☷ Legend (Focus Areas)</h3>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch" style="background:var(--career-bg);border-color:var(--career)"></span>Career &amp; Examination</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--tech-bg);border-color:var(--tech)"></span>Tech Services</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--blender-bg);border-color:var(--blender)"></span>Blender Business (Services)</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--debt-bg);border-color:var(--debt)"></span>Debt &amp; Cash Goal</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--ariscope-bg);border-color:var(--ariscope)"></span>Ariscope YouTube &amp; Products</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--habits-bg);border-color:var(--habits)"></span>Habits &amp; Personal Development</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>▤ Notes</h3>
+        <ul>
+          <li>Dates are based on 7 August 2026 as the starting point.</li>
+          <li>Adjust dates as per exam and real-world circumstances.</li>
+          <li>Consistent daily execution is the key to success.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footnote">Self-contained HTML • No external fonts, images, libraries, or internet connection required • Dates printed inside each task block are authoritative.</div>
+  </div>
+</main>
+
+<script type="application/json" id="timeline-source-of-truth">
+{
+  "title":"Personal Execution Timeline",
+  "subtitle":"3-Year Roadmap to Debt-Free + ৳10,00,000 Liquid Cash",
+  "years":[
+    {"name":"YEAR 1 (Foundation & Launch)","start":"2026-08-07","end":"2027-08-06"},
+    {"name":"YEAR 2 (Scale & Accelerate)","start":"2027-08-07","end":"2028-08-06"},
+    {"name":"YEAR 3 (Achieve & Consolidate)","start":"2028-08-07","end":"2029-08-06"}
+  ],
+  "milestones":[
+    "Oct 2026: Head Teacher Exam Completed",
+    "Apr 2027: Blender Freelancing Stable Start",
+    "Aug 2027: Strong Foundation Review",
+    "Feb 2028: All Debt Cleared + Emergency Fund Ready",
+    "Aug 2029: ৳10,00,000 Liquid Cash Achieved"
+  ]
+}
+</script>
+</body>
+</html>

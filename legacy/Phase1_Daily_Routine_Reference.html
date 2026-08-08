@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Execution Routine — 1M Target</title>
+<style>
+  :root{
+    --bg:#0b0f14;
+    --panel:#111821;
+    --panel2:#151e28;
+    --line:#25313e;
+    --text:#edf3f8;
+    --muted:#93a4b5;
+    --accent:#6ee7b7;
+    --blue:#7dd3fc;
+    --amber:#fbbf24;
+    --red:#fb7185;
+    --violet:#c4b5fd;
+    --shadow:0 12px 32px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}
+  body{
+    background:
+      radial-gradient(900px 600px at 15% -10%,rgba(125,211,252,.08),transparent 60%),
+      radial-gradient(800px 500px at 100% 0%,rgba(110,231,183,.07),transparent 55%),
+      var(--bg);
+    overflow:auto;
+  }
+  .wrap{max-width:1800px;margin:0 auto;padding:18px 22px 24px}
+  header{
+    display:grid;
+    grid-template-columns:1.3fr .9fr;
+    gap:16px;
+    align-items:stretch;
+    margin-bottom:14px;
+  }
+  .hero,.todayBox,.card{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(21,30,40,.96),rgba(14,20,28,.96));
+    border-radius:16px;
+    box-shadow:var(--shadow);
+  }
+  .hero{padding:18px 20px}
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--accent);
+    font-weight:800;
+    text-transform:uppercase;
+  }
+  h1{margin:5px 0 6px;font-size:clamp(28px,3vw,48px);line-height:1}
+  .mission{font-size:16px;color:#cbd5df}
+  .mission b{color:#fff}
+  .todayBox{
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+  .todayBox .date{font-size:14px;color:var(--muted)}
+  .todayBox .day{font-size:26px;font-weight:900;margin-top:3px}
+  .todayBox .focus{
+    text-align:right;
+    font-size:14px;
+    max-width:430px;
+    color:#dbe7f1;
+  }
+  .todayBox .focus strong{color:var(--amber)}
+  .grid{
+    display:grid;
+    grid-template-columns:1.35fr .95fr .95fr;
+    gap:14px;
+  }
+  .card{padding:15px 16px}
+  .card h2{
+    margin:0 0 10px;
+    font-size:15px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#d9e5ee;
+  }
+  .timeline{display:grid;gap:7px}
+  .slot{
+    display:grid;
+    grid-template-columns:98px 1fr 30px;
+    gap:10px;
+    align-items:center;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.018);
+    border-radius:11px;
+    padding:8px 9px;
+  }
+  .slot .time{font-weight:800;font-size:13px;color:var(--blue)}
+  .slot .task{font-size:13.5px;line-height:1.35}
+  .slot .task small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+  input[type=checkbox]{
+    appearance:none;
+    width:22px;height:22px;border-radius:7px;
+    border:1px solid #526171;background:#0e141b;cursor:pointer;position:relative;
+  }
+  input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+  input[type=checkbox]:checked:after{
+    content:"✓";position:absolute;inset:-1px 0 0 0;display:grid;place-items:center;
+    color:#07140f;font-size:16px;font-weight:1000;
+  }
+  .week{display:grid;gap:6px}
+  .dayrow{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px 10px;
+    display:grid;
+    grid-template-columns:78px 1fr;
+    gap:10px;
+    align-items:center;
+    font-size:12.5px;
+    background:rgba(255,255,255,.015);
+  }
+  .dayrow .dn{font-weight:900;color:#aebdca}
+  .dayrow.today{border-color:var(--accent);background:rgba(110,231,183,.07)}
+  .dayrow.today .dn{color:var(--accent)}
+  .tag{
+    display:inline-block;
+    padding:2px 7px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:900;
+    margin-right:5px;
+    letter-spacing:.04em;
+  }
+  .t-blender{color:#dffcf2;background:rgba(110,231,183,.14)}
+  .t-sales{color:#e7f8ff;background:rgba(125,211,252,.13)}
+  .t-admin{color:#fff2c7;background:rgba(251,191,36,.13)}
+  .t-rest{color:#eee8ff;background:rgba(196,181,253,.13)}
+  .targets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .metric{
+    border:1px solid var(--line);
+    border-radius:11px;padding:10px;background:rgba(255,255,255,.018)
+  }
+  .metric b{display:block;font-size:20px;margin-bottom:2px}
+  .metric span{font-size:11px;color:var(--muted);line-height:1.25}
+  .rules{display:grid;gap:7px}
+  .rule{
+    padding:8px 10px;border-left:3px solid var(--red);
+    background:rgba(251,113,133,.06);border-radius:7px;
+    font-size:12.5px;line-height:1.35;
+  }
+  .rule.good{border-left-color:var(--accent);background:rgba(110,231,183,.06)}
+  .rule.warn{border-left-color:var(--amber);background:rgba(251,191,36,.06)}
+  .bottom{
+    margin-top:14px;
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:14px;
+  }
+  .focusline{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+  }
+  .focusitem{
+    border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;
+    font-size:11px;color:var(--muted);background:rgba(255,255,255,.015)
+  }
+  .focusitem b{display:block;font-size:12.5px;color:#eaf2f8;margin-bottom:3px}
+  .notnow{
+    border:1px solid rgba(251,113,133,.45);
+    background:rgba(251,113,133,.07);
+    color:#ffd8df;
+  }
+  footer{
+    display:flex;justify-content:space-between;align-items:center;gap:15px;
+    margin-top:12px;color:var(--muted);font-size:11px;
+  }
+  button{
+    border:1px solid var(--line);background:#111923;color:#dbe7f1;
+    border-radius:9px;padding:7px 10px;cursor:pointer;font-weight:700
+  }
+  button:hover{border-color:#4c6074}
+  .smallprint{max-width:1200px;line-height:1.35}
+  @media(max-width:1200px){
+    .grid{grid-template-columns:1fr 1fr}
+    .grid .routine{grid-column:1/-1}
+    .bottom{grid-template-columns:1fr}
+  }
+  @media(max-width:760px){
+    header,.grid{grid-template-columns:1fr}
+    .todayBox{align-items:flex-start;flex-direction:column}
+    .todayBox .focus{text-align:left}
+    .slot{grid-template-columns:82px 1fr 28px}
+    .targets,.focusline{grid-template-columns:1fr 1fr}
+  }
+  @media print{
+    body{background:#fff;color:#111}
+    .hero,.todayBox,.card{box-shadow:none;background:#fff;border-color:#bbb}
+    .mission,.todayBox .date,.metric span,.slot .task small,.smallprint{color:#444}
+    .slot,.metric,.dayrow,.focusitem{background:#fff;border-color:#ccc}
+    footer button{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <section class="hero">
+      <div class="eyebrow">1M TARGET • 8-WEEK EXECUTION SPRINT</div>
+      <h1>DAILY EXECUTION ROUTINE</h1>
+      <div class="mission">
+        <b>Target:</b> Debt-free + ৳10,00,000 liquid cash &nbsp;•&nbsp;
+        <b>Now:</b> protect income, attack Head Teacher prep, monetize Blender every week.
+      </div>
+    </section>
+
+    <section class="todayBox">
+      <div>
+        <div class="date" id="dateText">—</div>
+        <div class="day" id="dayText">—</div>
+      </div>
+      <div class="focus">
+        Tonight: <strong id="tonightText">—</strong><br>
+        Office is 7 days/week. Recovery is protected through one <b>low-intensity evening</b>, not a holiday.
+      </div>
+    </section>
+  </header>
+
+  <main class="grid">
+    <section class="card routine">
+      <h2>Every Office Day — Fixed Backbone</h2>
+      <div class="timeline">
+        <label class="slot">
+          <span class="time">05:45–06:10</span>
+          <span class="task">Wake • prayer • water • brief movement — NO browsing
+            <small>Start the day without feeds, random research or messaging loops.</small>
+          </span>
+          <input type="checkbox" data-key="wake">
+        </label>
+
+        <label class="slot">
+          <span class="time">06:10–07:40</span>
+          <span class="task"><b>HEAD TEACHER — 90 min deep study</b>
+            <small>Hardest topic first. One syllabus source + one question bank. No resource switching.</small>
+          </span>
+          <input type="checkbox" data-key="deepstudy">
+        </label>
+
+        <label class="slot">
+          <span class="time">08:00–17:00</span>
+          <span class="task"><b>OFFICE DUTY FIRST</b> • permitted gaps → MCQ / vocabulary / error revision
+            <small>Only genuinely free periods. Work responsibilities always take priority.</small>
+          </span>
+          <input type="checkbox" data-key="office">
+        </label>
+
+        <label class="slot">
+          <span class="time">MIDDAY</span>
+          <span class="task">30 min Head Teacher review
+            <small>Recall + previous errors. Avoid passive re-reading.</small>
+          </span>
+          <input type="checkbox" data-key="midday">
+        </label>
+
+        <label class="slot">
+          <span class="time">AFTERNOON</span>
+          <span class="task">60–75 min timed questions during a permitted free block
+            <small>If office work prevents this, do not steal employer time; recover the block only if practical.</small>
+          </span>
+          <input type="checkbox" data-key="timed">
+        </label>
+
+        <label class="slot">
+          <span class="time">17:30–20:00</span>
+          <span class="task">Family • food • rest • protected family block
+            <small>On 5 days/week, include a 20–30 min walk or exercise.</small>
+          </span>
+          <input type="checkbox" data-key="family">
+        </label>
+
+        <label class="slot">
+          <span class="time">20:00–21:50</span>
+          <span class="task"><b id="eveningMain">Evening block</b>
+            <small id="eveningSub">Loaded automatically from the 7-day rotation.</small>
+          </span>
+          <input type="checkbox" data-key="evening">
+        </label>
+
+        <label class="slot">
+          <span class="time">21:50–22:00</span>
+          <span class="task">10-minute scorecard + prepare tomorrow's FIRST task
+            <small>Record focused work completed; put every new idea on the Not-Now List.</small>
+          </span>
+          <input type="checkbox" data-key="scorecard">
+        </label>
+
+        <label class="slot">
+          <span class="time">22:00–22:30</span>
+          <span class="task">Screen-free wind-down • devices out of bed
+            <small>Night laptop only in a visible/shared place. Sleep target: 22:30 → 05:45 = 7h 15m.</small>
+          </span>
+          <input type="checkbox" data-key="shutdown">
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7-Day Evening Rotation — Office Every Day</h2>
+      <div class="week" id="weekList">
+        <div class="dayrow" data-day="0"><div class="dn">Sunday</div><div><span class="tag t-blender">BLENDER</span> 90 min paid delivery / strongest portfolio mechanism. Final 20 min: delivery/admin.</div></div>
+        <div class="dayrow" data-day="1"><div class="dn">Monday</div><div><span class="tag t-sales">SALES</span> 60 min personalised proposals/outreach + 50 min Ariscope production.</div></div>
+        <div class="dayrow" data-day="2"><div class="dn">Tuesday</div><div><span class="tag t-blender">BLENDER</span> 90 min paid delivery / portfolio production. Paid client work always first.</div></div>
+        <div class="dayrow" data-day="3"><div class="dn">Wednesday</div><div><span class="tag t-sales">SALES</span> 60 min proposals/direct outreach + 50 min Ariscope/repurposing.</div></div>
+        <div class="dayrow" data-day="4"><div class="dn">Thursday</div><div><span class="tag t-blender">BLENDER</span> 90 min paid delivery / portfolio. Finish, publish, sell — do not endlessly learn.</div></div>
+        <div class="dayrow" data-day="5"><div class="dn">Friday</div><div><span class="tag t-admin">REVIEW</span> 45 min finance + 60 min Ponnora maximum-value commercial task + weekly plan.</div></div>
+        <div class="dayrow" data-day="6"><div class="dn">Saturday</div><div><span class="tag t-rest">RECOVERY</span> No paid work / no side-project pressure. Family, light revision only if wanted, early sleep.</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Weekly Numbers That Matter</h2>
+      <div class="targets">
+        <div class="metric"><b>20–24 h</b><span>Head Teacher focused preparation</span></div>
+        <div class="metric"><b>6–8 h</b><span>Blender client acquisition + paid delivery</span></div>
+        <div class="metric"><b>≈2 h</b><span>Ariscope / related digital-product work</span></div>
+        <div class="metric"><b>≤2–3 h</b><span>Ponnora — maximum, not an obligation</span></div>
+        <div class="metric"><b>45–60 min</b><span>Finance + weekly review</span></div>
+        <div class="metric"><b>150+ min</b><span>Exercise across at least 5 days</span></div>
+      </div>
+
+      <h2 style="margin-top:14px">Non-Negotiable Controls</h2>
+      <div class="rules">
+        <div class="rule good"><b>Income bridge stays.</b> Do not resign until a measurable exit gate is crossed.</div>
+        <div class="rule"><b>NO random new projects.</b> New apps, servers, courses, instruments, games or “maybe useful” learning → Not-Now List.</div>
+        <div class="rule warn"><b>Device rules stay active.</b> No phone in bed/bathroom; no private late-night laptop use; feeds are not a work tool.</div>
+        <div class="rule good"><b>One model → many outputs.</b> YouTube animation + Shorts + portfolio case study + sellable file when practical.</div>
+        <div class="rule"><b>A lapse never becomes a lost day.</b> Record trigger → strengthen one control → resume the next scheduled block.</div>
+      </div>
+    </section>
+  </main>
+
+  <section class="bottom">
+    <div class="card">
+      <h2>Active Project Limit — Only These Are Allowed</h2>
+      <div class="focusline">
+        <div class="focusitem"><b>1. Head Teacher</b>8-week stability sprint</div>
+        <div class="focusitem"><b>2. Blender Income</b>Primary growth engine</div>
+        <div class="focusitem"><b>3. Ariscope</b>Client + product asset</div>
+        <div class="focusitem"><b>4. Ponnora</b>Small controlled pilot</div>
+        <div class="focusitem"><b>5. Essential Admin</b>Family + finance only</div>
+      </div>
+    </div>
+
+    <div class="card notnow">
+      <h2 style="color:#ffd8df">STOP SIGNAL</h2>
+      <div style="font-size:15px;line-height:1.45">
+        <b>Before starting anything new, ask:</b><br>
+        Does this help the exam, create Blender income, grow Ariscope, validate Ponnora, or handle essential family/finance?<br>
+        <b>If NO → write it on the Not-Now List and return to today's block.</b>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="smallprint">
+      Source-faithful adaptation of the Personalised Millionaire Roadmap. Main adaptation: because there is no weekly office holiday, all 7 days retain the office routine and Saturday evening becomes the protected low-intensity recovery block. The roadmap's ≥7 h sleep, family time, exercise, anti-random-task rules and weekly allocations are preserved.
+    </div>
+    <div style="white-space:nowrap">
+      <button id="fullscreenBtn">Fullscreen</button>
+      <button id="resetBtn">Reset Today</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const days = [
+    {
+      title:"Blender production",
+      main:"BLENDER — 90 min paid delivery / strongest portfolio mechanism",
+      sub:"Paid work first. If no paid work exists, build the most commercially useful technical/mechanism portfolio piece."
+    },
+    {
+      title:"Sales + Ariscope",
+      main:"SALES — 60 min proposals/outreach + 50 min Ariscope",
+      sub:"Personalise every proposal. No proposal bots. Use the remaining block to produce or repurpose a client-relevant Ariscope asset."
+    },
+    {
+      title:"Blender production",
+      main:"BLENDER — 90 min paid delivery / portfolio production",
+      sub:"Finish and ship. Avoid tutorial rabbit holes; learn only what the current deliverable requires."
+    },
+    {
+      title:"Sales + Ariscope",
+      main:"SALES — 60 min proposals/direct outreach + 50 min Ariscope",
+      sub:"Prioritise manufacturers, technical educators, machinery, poultry/agri/veterinary and product-animation opportunities."
+    },
+    {
+      title:"Blender production",
+      main:"BLENDER — 90 min paid delivery / mechanism portfolio",
+      sub:"Aim for work that can become a YouTube asset, Short, portfolio case study and sellable file."
+    },
+    {
+      title:"Finance + Ponnora",
+      main:"WEEKLY REVIEW — 45 min finance + 60 min Ponnora",
+      sub:"Check cash, debt, proposals, revenue and focused hours. Ponnora gets one commercial task only; do not expand the experiment."
+    },
+    {
+      title:"Recovery evening",
+      main:"RECOVERY — family, decompression, optional light revision only",
+      sub:"No paid work or side-project pressure tonight. Keep the office day, then protect recovery and sleep."
+    }
+  ];
+
+  const now = new Date();
+  const day = now.getDay();
+  const dateFmt = new Intl.DateTimeFormat(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  document.getElementById("dateText").textContent = dateFmt.format(now);
+  document.getElementById("dayText").textContent = "Office Day • " + days[day].title;
+  document.getElementById("tonightText").textContent = days[day].title;
+  document.getElementById("eveningMain").textContent = days[day].main;
+  document.getElementById("eveningSub").textContent = days[day].sub;
+
+  document.querySelectorAll(".dayrow").forEach(el=>{
+    if(Number(el.dataset.day) === day) el.classList.add("today");
+  });
+
+  const dateKey = now.toISOString().slice(0,10);
+  document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb=>{
+    const key = "routine:"+dateKey+":"+cb.dataset.key;
+    cb.checked = localStorage.getItem(key)==="1";
+    cb.addEventListener("change",()=>localStorage.setItem(key,cb.checked?"1":"0"));
+  });
+
+  document.getElementById("resetBtn").addEventListener("click",()=>{
+    document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb=>{
+      cb.checked=false;
+      localStorage.removeItem("routine:"+dateKey+":"+cb.dataset.key);
+    });
+  });
+
+  document.getElementById("fullscreenBtn").addEventListener("click",()=>{
+    if(!document.fullscreenElement){
+      document.documentElement.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  });
+})();
+</script>
+</body>
+</html>
