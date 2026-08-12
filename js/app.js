@@ -4,6 +4,75 @@
 
   function esc(s){ return String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 
+    const PDF_READING_API = "http://127.0.0.1:8765/pdf-reading-today.json";
+
+  function formatTrackedTime(value){
+    const total = Math.max(0, Math.round(Number(value) || 0));
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
+
+    if(hours > 0) return `${hours}h ${minutes}m`;
+    if(minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
+  }
+
+  async function refreshPdfReading(){
+    if(!$("pdfVerifiedTime")) return;
+
+    try {
+      const response = await fetch(
+        `${PDF_READING_API}?t=${Date.now()}`,
+        { cache: "no-store" }
+      );
+
+      if(!response.ok){
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      $("pdfVerifiedTime").textContent =
+        formatTrackedTime(data.verifiedSeconds);
+
+      $("pdfRawTime").textContent =
+        formatTrackedTime(data.rawSeconds);
+
+      $("pdfAfkTime").textContent =
+        formatTrackedTime(data.afkExcluded);
+
+      let fresh = false;
+
+      if(data.updated){
+        const updatedDate = new Date(data.updated);
+
+        if(!Number.isNaN(updatedDate.getTime())){
+          fresh = (Date.now() - updatedDate.getTime()) <= 180000;
+        }
+      }
+
+      $("pdfReadingStatus").textContent =
+        fresh ? "LIVE" : "STALE";
+
+      $("pdfReadingUpdated").textContent =
+        data.updated
+          ? `Updated ${data.updated.slice(11,19)}`
+          : "Update time unavailable";
+
+    } catch(error) {
+
+      $("pdfVerifiedTime").textContent = "Unavailable";
+      $("pdfRawTime").textContent = "—";
+      $("pdfAfkTime").textContent = "—";
+
+      $("pdfReadingStatus").textContent = "OFFLINE";
+      $("pdfReadingUpdated").textContent =
+        "ActivityWatch unavailable on this device";
+
+      console.warn("PDF reading bridge unavailable:", error);
+    }
+  }
+
   function selectedDate(){
     return $("viewDate").value || D.getTodayISO(P.settings().project.timezone);
   }
@@ -111,8 +180,15 @@
   });
   $("ideaInput").addEventListener("keydown",e=>{ if(e.key==="Enter") $("addIdea").click(); });
 
-  $("viewDate").value=D.getTodayISO(P.settings().project.timezone);
+    $("viewDate").value=D.getTodayISO(P.settings().project.timezone);
   render();
+
+  refreshPdfReading();
+  setInterval(refreshPdfReading, 60000);
+
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden) refreshPdfReading();
+  });
 
   if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("service-worker.js").catch(()=>{});
 })();
