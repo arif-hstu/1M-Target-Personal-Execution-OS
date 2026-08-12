@@ -98,22 +98,31 @@ window.OneMRoutines = {
     "post-exam-portfolio": {
       sourceStatus: "Derived clock routine from roadmap's explicit +10–12 h reallocation",
       morning: {
-        id: "blender-deep",
+        id: "deepstudy",
         time: "06:10–07:40",
-        title: "BLENDER — deep production / portfolio / paid delivery",
-        detail: "Use the former exam deep-work block to build commercial output. Paid work first; otherwise portfolio repositioning."
+        title: "HEAD TEACHER — 90 min deep study",
+        detail: "Hardest topic first. One syllabus source + one question bank. No resource switching.",
+        tracking: "pdf-study",
+        targetMinMinutes: 90,
+        targetMaxMinutes: 90
       },
       midday: {
-        id: "pipeline",
+        id: "midday",
         time: "MIDDAY",
-        title: "30 min client pipeline / follow-up / product notes",
-        detail: "Small commercial actions only; avoid turning this into general learning."
+        title: "30 min Head Teacher review",
+        detail: "Recall + previous errors. Avoid passive re-reading.",
+        tracking: "pdf-study",
+        targetMinMinutes: 30,
+        targetMaxMinutes: 30
       },
       afternoon: {
-        id: "commercial-block",
+        id: "afternoon",
         time: "AFTERNOON",
-        title: "60–75 min Blender / outreach in a permitted free block",
-        detail: "Production, personalised proposals, direct outreach or a sellable digital-product task."
+        title: "60–75 min timed questions in a permitted free block",
+        detail: "If office work prevents it, do not steal employer time; recover only if practical.",
+        tracking: "pdf-study",
+        targetMinMinutes: 60,
+        targetMaxMinutes: 75
       },
       evenings: {
         0:["Blender delivery","BLENDER — paid delivery / portfolio finishing","Finish and publish a commercially useful mechanism/product piece."],
