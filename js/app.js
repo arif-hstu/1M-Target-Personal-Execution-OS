@@ -22,7 +22,7 @@
 
     try {
       const response = await fetch(
-        `${PDF_READING_API}?t=${Date.now()}`,
+        PDF_READING_API,
         { cache: "no-store" }
       );
 
