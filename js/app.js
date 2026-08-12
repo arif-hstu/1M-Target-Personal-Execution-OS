@@ -95,75 +95,461 @@
   // their target automatically becomes zero.
   // ====================================================================
 
-  function getPdfStudyTarget(date){
+function getPdfStudyTarget(date){
 
-    const targetDate =
-      date ||
-      D.getTodayISO(P.settings().project.timezone);
+  const targetDate =
+    date ||
+    D.getTodayISO(P.settings().project.timezone);
 
-    const phase = P.getPhase(targetDate);
+  const phase = P.getPhase(targetDate);
 
-    if(!phase){
-      return {
-        date: targetDate,
-        phase: null,
-        minMinutes: 0,
-        maxMinutes: 0,
-        blocks: 0
-      };
-    }
-
-    const routine = R.getRoutine(
-      targetDate,
-      phase
-    );
-
-    const trackedSlots = (routine.slots || []).filter(
-      slot => slot.tracking === "pdf-study"
-    );
-
-    let minMinutes = 0;
-    let maxMinutes = 0;
-
-    trackedSlots.forEach(slot => {
-
-      const min =
-        Number(slot.targetMinMinutes) || 0;
-
-      const max =
-        Number(slot.targetMaxMinutes) || min;
-
-      minMinutes += min;
-      maxMinutes += max;
-    });
-
+  if(!phase){
     return {
       date: targetDate,
-      phase: phase.id,
-      minMinutes,
-      maxMinutes,
-      blocks: trackedSlots.length
+      phase: null,
+      minMinutes: 0,
+      maxMinutes: 0,
+      blocks: 0,
+      segments: []
     };
   }
 
+  const routine = R.getRoutine(
+    targetDate,
+    phase
+  );
 
-  function renderPdfTarget(
-    verifiedSeconds = null,
-    activityDate = null
-  ){
+  const trackedSlots = (routine.slots || []).filter(
+    slot => slot.tracking === "pdf-study"
+  );
 
-    const progress =
-      $("pdfTargetProgress");
+  let minMinutes = 0;
+  let maxMinutes = 0;
+
+  const segments = [];
+
+  trackedSlots.forEach(slot => {
+
+    const min =
+      Math.max(
+        0,
+        Number(slot.targetMinMinutes) || 0
+      );
+
+    const max =
+      Math.max(
+        min,
+        Number(slot.targetMaxMinutes) || min
+      );
+
+    minMinutes += min;
+    maxMinutes += max;
 
     const label =
-      $("pdfTargetLabel");
+      slot.trackingLabel ||
+      slot.title ||
+      "PDF study";
 
-    const pct =
-      $("pdfTargetPct");
-
-    if(!progress || !label || !pct){
-      return;
+    // Main required portion of the routine block.
+    if(min > 0){
+      segments.push({
+        id: `${slot.id}-core`,
+        label,
+        minutes: min,
+        stretch: false
+      });
     }
+
+    // Optional upper-range portion.
+    // Example: 60–75 minutes becomes:
+    // 60 min core + 15 min stretch.
+    if(max > min){
+      segments.push({
+        id: `${slot.id}-stretch`,
+        label: `${label} +`,
+        minutes: max - min,
+        stretch: true
+      });
+    }
+  });
+
+  return {
+    date: targetDate,
+    phase: phase.id,
+    minMinutes,
+    maxMinutes,
+    blocks: trackedSlots.length,
+    segments
+  };
+}
+
+
+function renderPdfTarget(
+  verifiedSeconds = null,
+  activityDate = null
+){
+
+  const segmentBar =
+    $("pdfSegmentBar");
+
+  const currentBlock =
+    $("pdfCurrentBlock");
+
+  const legacyProgress =
+    $("pdfLegacyProgress");
+
+  const progress =
+    $("pdfTargetProgress");
+
+  const label =
+    $("pdfTargetLabel");
+
+  const pct =
+    $("pdfTargetPct");
+
+
+  if(!label || !pct){
+    return;
+  }
+
+
+  const targetDate =
+    activityDate ||
+    D.getTodayISO(P.settings().project.timezone);
+
+
+  const target =
+    getPdfStudyTarget(targetDate);
+
+
+  // ==============================================================
+  // NO PDF TARGET TODAY
+  // ==============================================================
+
+  if(
+    target.minMinutes <= 0 ||
+    target.segments.length === 0
+  ){
+
+    if(segmentBar){
+      segmentBar.hidden = true;
+      segmentBar.innerHTML = "";
+    }
+
+    if(currentBlock){
+      currentBlock.hidden = true;
+      currentBlock.innerHTML = "";
+    }
+
+    if(legacyProgress){
+      legacyProgress.hidden = true;
+    }
+
+    if(progress){
+      progress.style.width = "0%";
+    }
+
+    label.textContent =
+      "No PDF study target in today's routine";
+
+    pct.textContent = "—";
+
+    return;
+  }
+
+
+  // ==============================================================
+  // TARGET TEXT
+  // ==============================================================
+
+  const minText =
+    formatTargetMinutes(
+      target.minMinutes
+    );
+
+  const maxText =
+    formatTargetMinutes(
+      target.maxMinutes
+    );
+
+
+  label.textContent =
+    target.minMinutes === target.maxMinutes
+      ? `Today's PDF study target: ${minText}`
+      : `Today's PDF study target: ${minText}–${maxText}`;
+
+
+  // We now use the segmented bar instead of the old single bar.
+  if(legacyProgress){
+    legacyProgress.hidden = true;
+  }
+
+
+  if(!segmentBar){
+    return;
+  }
+
+
+  segmentBar.hidden = false;
+
+
+  // ==============================================================
+  // VERIFIED MINUTES
+  // ==============================================================
+
+  const hasActivityData =
+    verifiedSeconds !== null &&
+    Number.isFinite(
+      Number(verifiedSeconds)
+    );
+
+
+  const verifiedMinutes =
+    hasActivityData
+      ? Math.max(
+          0,
+          Number(verifiedSeconds)
+        ) / 60
+      : 0;
+
+
+  // ==============================================================
+  // BUILD SEGMENTS
+  //
+  // Verified time is allocated sequentially through the routine:
+  //
+  // Morning → Midday → Afternoon → Stretch
+  // ==============================================================
+
+  let consumedMinutes = 0;
+
+
+  segmentBar.innerHTML =
+    target.segments.map(segment => {
+
+      const segmentStart =
+        consumedMinutes;
+
+      const segmentEnd =
+        segmentStart + segment.minutes;
+
+
+      let completedInsideSegment = 0;
+
+
+      if(verifiedMinutes > segmentStart){
+
+        completedInsideSegment =
+          Math.min(
+            segment.minutes,
+            verifiedMinutes - segmentStart
+          );
+      }
+
+
+      const fillPct =
+        segment.minutes > 0
+          ? (
+              completedInsideSegment /
+              segment.minutes
+            ) * 100
+          : 0;
+
+
+      const completed =
+        hasActivityData &&
+        verifiedMinutes >= segmentEnd;
+
+
+      consumedMinutes =
+        segmentEnd;
+
+
+      const widthPct =
+        target.maxMinutes > 0
+          ? (
+              segment.minutes /
+              target.maxMinutes
+            ) * 100
+          : 0;
+
+
+      const title =
+        `${segment.label}: ${formatTargetMinutes(segment.minutes)}`;
+
+
+      return (
+        `<div ` +
+          `class="pdfSegment` +
+            `${segment.stretch ? " stretch" : ""}` +
+            `${completed ? " completed" : ""}` +
+          `" ` +
+          `style="width:${widthPct}%" ` +
+          `title="${esc(title)}"` +
+        `>` +
+
+          `<div ` +
+            `class="pdfSegmentFill" ` +
+            `style="width:${Math.min(100, Math.max(0, fillPct))}%"` +
+          `></div>` +
+
+          `<div class="pdfSegmentLabel">` +
+            `${esc(segment.label)}` +
+          `</div>` +
+
+        `</div>`
+      );
+
+    }).join("");
+
+
+  // ==============================================================
+  // ACTIVITY DATA UNAVAILABLE
+  // ==============================================================
+
+  if(!hasActivityData){
+
+    pct.textContent =
+      "Activity data unavailable";
+
+
+    if(currentBlock){
+
+      currentBlock.hidden = false;
+
+      currentBlock.innerHTML =
+        `<strong>Tracking unavailable</strong> — ` +
+        `the routine target is still shown above.`;
+    }
+
+    return;
+  }
+
+
+  // ==============================================================
+  // FIND CURRENT ROUTINE SEGMENT
+  // ==============================================================
+
+  let runningTotal = 0;
+  let currentSegment = null;
+
+
+  for(const segment of target.segments){
+
+    const start =
+      runningTotal;
+
+    const end =
+      start + segment.minutes;
+
+
+    if(verifiedMinutes < end){
+
+      currentSegment = {
+        ...segment,
+        start,
+        end
+      };
+
+      break;
+    }
+
+
+    runningTotal =
+      end;
+  }
+
+
+  // ==============================================================
+  // CURRENT-BLOCK MESSAGE
+  // ==============================================================
+
+  if(currentBlock){
+
+    currentBlock.hidden = false;
+
+
+    if(verifiedMinutes >= target.maxMinutes){
+
+      currentBlock.innerHTML =
+        `<strong>Full daily PDF target completed ✓</strong> — ` +
+        `${formatTargetMinutes(target.maxMinutes)} verified.`;
+
+    }
+
+    else if(currentSegment){
+
+      const inside =
+        Math.max(
+          0,
+          Math.min(
+            currentSegment.minutes,
+            verifiedMinutes -
+            currentSegment.start
+          )
+        );
+
+
+      if(currentSegment.stretch){
+
+        currentBlock.innerHTML =
+          `<strong>Stretch target:</strong> ` +
+          `${esc(currentSegment.label.replace(/\s\+$/, ""))} — ` +
+          `${formatTargetMinutes(inside)} / ` +
+          `${formatTargetMinutes(currentSegment.minutes)}`;
+
+      }
+
+      else {
+
+        currentBlock.innerHTML =
+          `<strong>Current target block:</strong> ` +
+          `${esc(currentSegment.label)} — ` +
+          `${formatTargetMinutes(inside)} / ` +
+          `${formatTargetMinutes(currentSegment.minutes)}`;
+      }
+    }
+  }
+
+
+  // ==============================================================
+  // OVERALL STATUS
+  // ==============================================================
+
+  const minPct =
+    (
+      verifiedMinutes /
+      target.minMinutes
+    ) * 100;
+
+
+  const maxPct =
+    (
+      verifiedMinutes /
+      target.maxMinutes
+    ) * 100;
+
+
+  if(verifiedMinutes >= target.maxMinutes){
+
+    pct.textContent =
+      "Full target met ✓";
+
+  }
+
+  else if(verifiedMinutes >= target.minMinutes){
+
+    pct.textContent =
+      `Minimum met ✓ • ${Math.round(maxPct)}% of upper target`;
+
+  }
+
+  else {
+
+    pct.textContent =
+      `${Math.round(minPct)}% of minimum target`;
+  }
+}
 
 
     // Prefer the exact date reported by ActivityWatch.
