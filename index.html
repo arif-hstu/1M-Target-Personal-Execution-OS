@@ -72,16 +72,34 @@
       <span id="pdfReadingUpdated">Waiting for this PC</span>
     </div>
   </div>
-  <div style="margin-top:12px">
-    <div class="progress">
-      <span id="pdfTargetProgress"></span>
-    </div>
+<div style="margin-top:12px">
 
-    <div class="progressMeta">
-      <span id="pdfTargetLabel">Today's PDF study target: —</span>
-      <span id="pdfTargetPct">—</span>
-    </div>
-  </div>   
+  <!-- New dynamic segmented study bar -->
+  <div
+    id="pdfSegmentBar"
+    class="pdfSegmentBar"
+    aria-label="Today's PDF study blocks"
+    hidden
+  ></div>
+
+  <!-- Shows which routine block the verified time is currently filling -->
+  <div
+    id="pdfCurrentBlock"
+    class="pdfCurrentBlock"
+    hidden
+  ></div>
+
+  <!-- Existing bar kept temporarily until segmented system is activated -->
+  <div class="progress" id="pdfLegacyProgress">
+    <span id="pdfTargetProgress"></span>
+  </div>
+
+  <div class="progressMeta">
+    <span id="pdfTargetLabel">Today's PDF study target: —</span>
+    <span id="pdfTargetPct">—</span>
+  </div>
+
+</div>
 </section>
   
   <div class="grid3">
