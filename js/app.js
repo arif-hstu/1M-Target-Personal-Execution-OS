@@ -1,560 +1,150 @@
 (function(){
-
   const D = window.OneMDate;
   const P = window.OneMPhase;
   const R = window.OneMRoutine;
   const S = window.OneMStore;
-
   const $ = id => document.getElementById(id);
 
-
-  // ====================================================================
-  // BASIC HELPERS
-  // ====================================================================
-
   function esc(s){
-    return String(s ?? "").replace(
-      /[&<>"']/g,
-      c => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "\"": "&quot;",
-        "'": "&#39;"
-      }[c])
-    );
+    return String(s ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      "\"":"&quot;",
+      "'":"&#39;"
+    }[c]));
   }
 
-
-  // ====================================================================
-  // ACTIVITYWATCH — LOCAL PDF READING API
-  // ====================================================================
-
-  const PDF_READING_API =
-    "http://127.0.0.1:8765/pdf-reading-today.json";
-
+  const PDF_READING_API = "http://127.0.0.1:8765/pdf-reading-today.json";
 
   function formatTrackedTime(value){
-
-    const total = Math.max(
-      0,
-      Math.round(Number(value) || 0)
-    );
-
+    const total = Math.max(0, Math.round(Number(value) || 0));
     const hours = Math.floor(total / 3600);
     const minutes = Math.floor((total % 3600) / 60);
     const seconds = total % 60;
 
-    if(hours > 0){
-      return `${hours}h ${minutes}m`;
-    }
-
-    if(minutes > 0){
-      return `${minutes}m ${seconds}s`;
-    }
-
+    if(hours > 0) return `${hours}h ${minutes}m`;
+    if(minutes > 0) return `${minutes}m ${seconds}s`;
     return `${seconds}s`;
   }
 
-
   function formatTargetMinutes(minutes){
-
-    const total = Math.max(
-      0,
-      Math.round(Number(minutes) || 0)
-    );
-
+    const total = Math.max(0, Math.round(Number(minutes) || 0));
     const hours = Math.floor(total / 60);
     const mins = total % 60;
 
-    if(hours > 0 && mins > 0){
-      return `${hours}h ${mins}m`;
-    }
-
-    if(hours > 0){
-      return `${hours}h`;
-    }
-
+    if(hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+    if(hours > 0) return `${hours}h`;
     return `${mins}m`;
   }
 
+  function getPdfStudyTarget(date){
+    const targetDate =
+      date ||
+      D.getTodayISO(P.settings().project.timezone);
 
-  // ====================================================================
-  // DYNAMIC PDF STUDY TARGET
-  //
-  // IMPORTANT:
-  // This does NOT hard-code 3h or 3h15m.
-  //
-  // It reads tracking metadata from whichever routine is active
-  // for the supplied date.
-  //
-  // exam-sprint currently produces:
-  // 90 + 30 + 60–75 = 180–195 minutes.
-  //
-  // Post-exam phases contain no "pdf-study" metadata, therefore
-  // their target automatically becomes zero.
-  // ====================================================================
+    const phase = P.getPhase(targetDate);
 
-function getPdfStudyTarget(date){
+    if(!phase){
+      return {
+        date: targetDate,
+        phase: null,
+        minMinutes: 0,
+        maxMinutes: 0,
+        blocks: 0,
+        segments: []
+      };
+    }
 
-  const targetDate =
-    date ||
-    D.getTodayISO(P.settings().project.timezone);
+    const routine =
+      R.getRoutine(targetDate, phase);
 
-  const phase = P.getPhase(targetDate);
+    const trackedSlots =
+      (routine.slots || []).filter(
+        slot => slot.tracking === "pdf-study"
+      );
 
-  if(!phase){
+    let minMinutes = 0;
+    let maxMinutes = 0;
+
+    const segments = [];
+
+    trackedSlots.forEach(slot => {
+      const min =
+        Math.max(
+          0,
+          Number(slot.targetMinMinutes) || 0
+        );
+
+      const max =
+        Math.max(
+          min,
+          Number(slot.targetMaxMinutes) || min
+        );
+
+      const label =
+        slot.trackingLabel ||
+        slot.title ||
+        "PDF study";
+
+      minMinutes += min;
+      maxMinutes += max;
+
+      if(min > 0){
+        segments.push({
+          id: `${slot.id}-core`,
+          label,
+          minutes: min,
+          stretch: false
+        });
+      }
+
+      if(max > min){
+        segments.push({
+          id: `${slot.id}-stretch`,
+          label: `${label} +`,
+          minutes: max - min,
+          stretch: true
+        });
+      }
+    });
+
     return {
       date: targetDate,
-      phase: null,
-      minMinutes: 0,
-      maxMinutes: 0,
-      blocks: 0,
-      segments: []
+      phase: phase.id,
+      minMinutes,
+      maxMinutes,
+      blocks: trackedSlots.length,
+      segments
     };
   }
 
-  const routine = R.getRoutine(
-    targetDate,
-    phase
-  );
+  function renderPdfTarget(
+    verifiedSeconds = null,
+    activityDate = null
+  ){
+    const segmentBar =
+      $("pdfSegmentBar");
 
-  const trackedSlots = (routine.slots || []).filter(
-    slot => slot.tracking === "pdf-study"
-  );
+    const currentBlock =
+      $("pdfCurrentBlock");
 
-  let minMinutes = 0;
-  let maxMinutes = 0;
+    const legacyProgress =
+      $("pdfLegacyProgress");
 
-  const segments = [];
-
-  trackedSlots.forEach(slot => {
-
-    const min =
-      Math.max(
-        0,
-        Number(slot.targetMinMinutes) || 0
-      );
-
-    const max =
-      Math.max(
-        min,
-        Number(slot.targetMaxMinutes) || min
-      );
-
-    minMinutes += min;
-    maxMinutes += max;
+    const progress =
+      $("pdfTargetProgress");
 
     const label =
-      slot.trackingLabel ||
-      slot.title ||
-      "PDF study";
+      $("pdfTargetLabel");
 
-    // Main required portion of the routine block.
-    if(min > 0){
-      segments.push({
-        id: `${slot.id}-core`,
-        label,
-        minutes: min,
-        stretch: false
-      });
+    const pct =
+      $("pdfTargetPct");
+
+    if(!label || !pct){
+      return;
     }
 
-    // Optional upper-range portion.
-    // Example: 60–75 minutes becomes:
-    // 60 min core + 15 min stretch.
-    if(max > min){
-      segments.push({
-        id: `${slot.id}-stretch`,
-        label: `${label} +`,
-        minutes: max - min,
-        stretch: true
-      });
-    }
-  });
-
-  return {
-    date: targetDate,
-    phase: phase.id,
-    minMinutes,
-    maxMinutes,
-    blocks: trackedSlots.length,
-    segments
-  };
-}
-
-
-function renderPdfTarget(
-  verifiedSeconds = null,
-  activityDate = null
-){
-
-  const segmentBar =
-    $("pdfSegmentBar");
-
-  const currentBlock =
-    $("pdfCurrentBlock");
-
-  const legacyProgress =
-    $("pdfLegacyProgress");
-
-  const progress =
-    $("pdfTargetProgress");
-
-  const label =
-    $("pdfTargetLabel");
-
-  const pct =
-    $("pdfTargetPct");
-
-
-  if(!label || !pct){
-    return;
-  }
-
-
-  const targetDate =
-    activityDate ||
-    D.getTodayISO(P.settings().project.timezone);
-
-
-  const target =
-    getPdfStudyTarget(targetDate);
-
-
-  // ==============================================================
-  // NO PDF TARGET TODAY
-  // ==============================================================
-
-  if(
-    target.minMinutes <= 0 ||
-    target.segments.length === 0
-  ){
-
-    if(segmentBar){
-      segmentBar.hidden = true;
-      segmentBar.innerHTML = "";
-    }
-
-    if(currentBlock){
-      currentBlock.hidden = true;
-      currentBlock.innerHTML = "";
-    }
-
-    if(legacyProgress){
-      legacyProgress.hidden = true;
-    }
-
-    if(progress){
-      progress.style.width = "0%";
-    }
-
-    label.textContent =
-      "No PDF study target in today's routine";
-
-    pct.textContent = "—";
-
-    return;
-  }
-
-
-  // ==============================================================
-  // TARGET TEXT
-  // ==============================================================
-
-  const minText =
-    formatTargetMinutes(
-      target.minMinutes
-    );
-
-  const maxText =
-    formatTargetMinutes(
-      target.maxMinutes
-    );
-
-
-  label.textContent =
-    target.minMinutes === target.maxMinutes
-      ? `Today's PDF study target: ${minText}`
-      : `Today's PDF study target: ${minText}–${maxText}`;
-
-
-  // We now use the segmented bar instead of the old single bar.
-  if(legacyProgress){
-    legacyProgress.hidden = true;
-  }
-
-
-  if(!segmentBar){
-    return;
-  }
-
-
-  segmentBar.hidden = false;
-
-
-  // ==============================================================
-  // VERIFIED MINUTES
-  // ==============================================================
-
-  const hasActivityData =
-    verifiedSeconds !== null &&
-    Number.isFinite(
-      Number(verifiedSeconds)
-    );
-
-
-  const verifiedMinutes =
-    hasActivityData
-      ? Math.max(
-          0,
-          Number(verifiedSeconds)
-        ) / 60
-      : 0;
-
-
-  // ==============================================================
-  // BUILD SEGMENTS
-  //
-  // Verified time is allocated sequentially through the routine:
-  //
-  // Morning → Midday → Afternoon → Stretch
-  // ==============================================================
-
-  let consumedMinutes = 0;
-
-
-  segmentBar.innerHTML =
-    target.segments.map(segment => {
-
-      const segmentStart =
-        consumedMinutes;
-
-      const segmentEnd =
-        segmentStart + segment.minutes;
-
-
-      let completedInsideSegment = 0;
-
-
-      if(verifiedMinutes > segmentStart){
-
-        completedInsideSegment =
-          Math.min(
-            segment.minutes,
-            verifiedMinutes - segmentStart
-          );
-      }
-
-
-      const fillPct =
-        segment.minutes > 0
-          ? (
-              completedInsideSegment /
-              segment.minutes
-            ) * 100
-          : 0;
-
-
-      const completed =
-        hasActivityData &&
-        verifiedMinutes >= segmentEnd;
-
-
-      consumedMinutes =
-        segmentEnd;
-
-
-      const widthPct =
-        target.maxMinutes > 0
-          ? (
-              segment.minutes /
-              target.maxMinutes
-            ) * 100
-          : 0;
-
-
-      const title =
-        `${segment.label}: ${formatTargetMinutes(segment.minutes)}`;
-
-
-      return (
-        `<div ` +
-          `class="pdfSegment` +
-            `${segment.stretch ? " stretch" : ""}` +
-            `${completed ? " completed" : ""}` +
-          `" ` +
-          `style="width:${widthPct}%" ` +
-          `title="${esc(title)}"` +
-        `>` +
-
-          `<div ` +
-            `class="pdfSegmentFill" ` +
-            `style="width:${Math.min(100, Math.max(0, fillPct))}%"` +
-          `></div>` +
-
-          `<div class="pdfSegmentLabel">` +
-            `${esc(segment.label)}` +
-          `</div>` +
-
-        `</div>`
-      );
-
-    }).join("");
-
-
-  // ==============================================================
-  // ACTIVITY DATA UNAVAILABLE
-  // ==============================================================
-
-  if(!hasActivityData){
-
-    pct.textContent =
-      "Activity data unavailable";
-
-
-    if(currentBlock){
-
-      currentBlock.hidden = false;
-
-      currentBlock.innerHTML =
-        `<strong>Tracking unavailable</strong> — ` +
-        `the routine target is still shown above.`;
-    }
-
-    return;
-  }
-
-
-  // ==============================================================
-  // FIND CURRENT ROUTINE SEGMENT
-  // ==============================================================
-
-  let runningTotal = 0;
-  let currentSegment = null;
-
-
-  for(const segment of target.segments){
-
-    const start =
-      runningTotal;
-
-    const end =
-      start + segment.minutes;
-
-
-    if(verifiedMinutes < end){
-
-      currentSegment = {
-        ...segment,
-        start,
-        end
-      };
-
-      break;
-    }
-
-
-    runningTotal =
-      end;
-  }
-
-
-  // ==============================================================
-  // CURRENT-BLOCK MESSAGE
-  // ==============================================================
-
-  if(currentBlock){
-
-    currentBlock.hidden = false;
-
-
-    if(verifiedMinutes >= target.maxMinutes){
-
-      currentBlock.innerHTML =
-        `<strong>Full daily PDF target completed ✓</strong> — ` +
-        `${formatTargetMinutes(target.maxMinutes)} verified.`;
-
-    }
-
-    else if(currentSegment){
-
-      const inside =
-        Math.max(
-          0,
-          Math.min(
-            currentSegment.minutes,
-            verifiedMinutes -
-            currentSegment.start
-          )
-        );
-
-
-      if(currentSegment.stretch){
-
-        currentBlock.innerHTML =
-          `<strong>Stretch target:</strong> ` +
-          `${esc(currentSegment.label.replace(/\s\+$/, ""))} — ` +
-          `${formatTargetMinutes(inside)} / ` +
-          `${formatTargetMinutes(currentSegment.minutes)}`;
-
-      }
-
-      else {
-
-        currentBlock.innerHTML =
-          `<strong>Current target block:</strong> ` +
-          `${esc(currentSegment.label)} — ` +
-          `${formatTargetMinutes(inside)} / ` +
-          `${formatTargetMinutes(currentSegment.minutes)}`;
-      }
-    }
-  }
-
-
-  // ==============================================================
-  // OVERALL STATUS
-  // ==============================================================
-
-  const minPct =
-    (
-      verifiedMinutes /
-      target.minMinutes
-    ) * 100;
-
-
-  const maxPct =
-    (
-      verifiedMinutes /
-      target.maxMinutes
-    ) * 100;
-
-
-  if(verifiedMinutes >= target.maxMinutes){
-
-    pct.textContent =
-      "Full target met ✓";
-
-  }
-
-  else if(verifiedMinutes >= target.minMinutes){
-
-    pct.textContent =
-      `Minimum met ✓ • ${Math.round(maxPct)}% of upper target`;
-
-  }
-
-  else {
-
-    pct.textContent =
-      `${Math.round(minPct)}% of minimum target`;
-  }
-}
-
-
-    // Prefer the exact date reported by ActivityWatch.
-    // This prevents the roadmap date picker from changing today's
-    // actual study target/progress comparison.
     const targetDate =
       activityDate ||
       D.getTodayISO(P.settings().project.timezone);
@@ -562,14 +152,27 @@ function renderPdfTarget(
     const target =
       getPdfStudyTarget(targetDate);
 
+    if(
+      target.minMinutes <= 0 ||
+      target.segments.length === 0
+    ){
+      if(segmentBar){
+        segmentBar.hidden = true;
+        segmentBar.innerHTML = "";
+      }
 
-    // ------------------------------------------------------------
-    // NO PDF STUDY TARGET TODAY
-    // ------------------------------------------------------------
+      if(currentBlock){
+        currentBlock.hidden = true;
+        currentBlock.innerHTML = "";
+      }
 
-    if(target.minMinutes <= 0){
+      if(legacyProgress){
+        legacyProgress.hidden = true;
+      }
 
-      progress.style.width = "0%";
+      if(progress){
+        progress.style.width = "0%";
+      }
 
       label.textContent =
         "No PDF study target in today's routine";
@@ -579,197 +182,295 @@ function renderPdfTarget(
       return;
     }
 
-
-    // ------------------------------------------------------------
-    // DISPLAY TARGET RANGE
-    // ------------------------------------------------------------
-
     const minText =
       formatTargetMinutes(target.minMinutes);
 
     const maxText =
       formatTargetMinutes(target.maxMinutes);
 
-    if(target.minMinutes === target.maxMinutes){
+    label.textContent =
+      target.minMinutes === target.maxMinutes
+        ? `Today's PDF study target: ${minText}`
+        : `Today's PDF study target: ${minText}–${maxText}`;
 
-      label.textContent =
-        `Today's PDF study target: ${minText}`;
-
-    } else {
-
-      label.textContent =
-        `Today's PDF study target: ${minText}–${maxText}`;
+    if(legacyProgress){
+      legacyProgress.hidden = true;
     }
 
+    if(!segmentBar){
+      return;
+    }
 
-    // ------------------------------------------------------------
-    // ACTIVITYWATCH UNAVAILABLE
-    // ------------------------------------------------------------
+    segmentBar.hidden = false;
 
-    if(verifiedSeconds === null){
+    const hasActivityData =
+      verifiedSeconds !== null &&
+      Number.isFinite(
+        Number(verifiedSeconds)
+      );
 
-      progress.style.width = "0%";
+    const verifiedMinutes =
+      hasActivityData
+        ? Math.max(
+            0,
+            Number(verifiedSeconds)
+          ) / 60
+        : 0;
 
+    let consumedMinutes = 0;
+
+    segmentBar.innerHTML =
+      target.segments.map(segment => {
+
+        const segmentStart =
+          consumedMinutes;
+
+        const segmentEnd =
+          segmentStart +
+          segment.minutes;
+
+        const completedInsideSegment =
+          verifiedMinutes > segmentStart
+            ? Math.min(
+                segment.minutes,
+                verifiedMinutes -
+                segmentStart
+              )
+            : 0;
+
+        const fillPct =
+          segment.minutes > 0
+            ? (
+                completedInsideSegment /
+                segment.minutes
+              ) * 100
+            : 0;
+
+        const completed =
+          hasActivityData &&
+          verifiedMinutes >= segmentEnd;
+
+        const widthPct =
+          target.maxMinutes > 0
+            ? (
+                segment.minutes /
+                target.maxMinutes
+              ) * 100
+            : 0;
+
+        const title =
+          `${segment.label}: ${formatTargetMinutes(segment.minutes)}`;
+
+        consumedMinutes =
+          segmentEnd;
+
+        return (
+          `<div ` +
+            `class="pdfSegment` +
+              `${segment.stretch ? " stretch" : ""}` +
+              `${completed ? " completed" : ""}` +
+            `" ` +
+            `style="width:${widthPct}%" ` +
+            `title="${esc(title)}"` +
+          `>` +
+
+            `<div ` +
+              `class="pdfSegmentFill" ` +
+              `style="width:${Math.min(
+                100,
+                Math.max(
+                  0,
+                  fillPct
+                )
+              )}%"` +
+            `></div>` +
+
+            `<div class="pdfSegmentLabel">` +
+              `${esc(segment.label)}` +
+            `</div>` +
+
+          `</div>`
+        );
+      }).join("");
+
+    if(!hasActivityData){
       pct.textContent =
         "Activity data unavailable";
+
+      if(currentBlock){
+        currentBlock.hidden =
+          false;
+
+        currentBlock.innerHTML =
+          `<strong>Tracking unavailable</strong> — ` +
+          `the routine target is still shown above.`;
+      }
 
       return;
     }
 
+    let runningTotal = 0;
+    let currentSegment = null;
 
-    // ------------------------------------------------------------
-    // CALCULATE PROGRESS
-    // ------------------------------------------------------------
+    for(const segment of target.segments){
+      const start =
+        runningTotal;
 
-    const verifiedMinutes =
-      Math.max(
-        0,
-        Number(verifiedSeconds) || 0
-      ) / 60;
+      const end =
+        start +
+        segment.minutes;
 
+      if(verifiedMinutes < end){
+        currentSegment = {
+          ...segment,
+          start,
+          end
+        };
 
-    const minPct =
-      target.minMinutes > 0
-        ? (verifiedMinutes / target.minMinutes) * 100
-        : 0;
+        break;
+      }
 
-
-    const maxPct =
-      target.maxMinutes > 0
-        ? (verifiedMinutes / target.maxMinutes) * 100
-        : minPct;
-
-
-    // Progress bar represents progress toward the UPPER target.
-    // Example:
-    // target 3h–3h15m
-    //
-    // 3h reached:
-    // minimum is achieved, but bar is still slightly below 100%.
-    //
-    // 3h15m reached:
-    // full target = 100%.
-    const barPct =
-      target.maxMinutes > target.minMinutes
-        ? maxPct
-        : minPct;
-
-
-    progress.style.width =
-      `${Math.min(
-        100,
-        Math.max(0, barPct)
-      )}%`;
-
-
-    // ------------------------------------------------------------
-    // STATUS TEXT
-    // ------------------------------------------------------------
-
-    if(verifiedMinutes >= target.maxMinutes){
-
-      pct.textContent =
-        "Full target met ✓";
-
+      runningTotal =
+        end;
     }
 
-    else if(verifiedMinutes >= target.minMinutes){
+    if(currentBlock){
+      currentBlock.hidden =
+        false;
 
+      if(
+        verifiedMinutes >=
+        target.maxMinutes
+      ){
+        currentBlock.innerHTML =
+          `<strong>Full daily PDF target completed ✓</strong> — ` +
+          `${formatTargetMinutes(target.maxMinutes)} verified.`;
+      }
+
+      else if(currentSegment){
+        const inside =
+          Math.max(
+            0,
+            Math.min(
+              currentSegment.minutes,
+              verifiedMinutes -
+              currentSegment.start
+            )
+          );
+
+        if(currentSegment.stretch){
+          currentBlock.innerHTML =
+            `<strong>Stretch target:</strong> ` +
+            `${esc(
+              currentSegment.label.replace(
+                /\s\+$/,
+                ""
+              )
+            )} — ` +
+            `${formatTargetMinutes(inside)} / ` +
+            `${formatTargetMinutes(currentSegment.minutes)}`;
+        }
+
+        else {
+          currentBlock.innerHTML =
+            `<strong>Current target block:</strong> ` +
+            `${esc(currentSegment.label)} — ` +
+            `${formatTargetMinutes(inside)} / ` +
+            `${formatTargetMinutes(currentSegment.minutes)}`;
+        }
+      }
+    }
+
+    const minPct =
+      (
+        verifiedMinutes /
+        target.minMinutes
+      ) * 100;
+
+    const maxPct =
+      (
+        verifiedMinutes /
+        target.maxMinutes
+      ) * 100;
+
+    if(
+      verifiedMinutes >=
+      target.maxMinutes
+    ){
+      pct.textContent =
+        "Full target met ✓";
+    }
+
+    else if(
+      verifiedMinutes >=
+      target.minMinutes
+    ){
       pct.textContent =
         `Minimum met ✓ • ${Math.round(maxPct)}% of upper target`;
-
     }
 
     else {
-
       pct.textContent =
         `${Math.round(minPct)}% of minimum target`;
-
     }
   }
 
-
-  // ====================================================================
-  // REFRESH ACTIVITYWATCH DATA
-  // ====================================================================
-
   async function refreshPdfReading(){
-
     if(!$("pdfVerifiedTime")){
       return;
     }
 
     try {
-
-      const response = await fetch(
-        PDF_READING_API,
-        {
-          cache: "no-store"
-        }
-      );
-
+      const response =
+        await fetch(
+          PDF_READING_API,
+          {
+            cache: "no-store"
+          }
+        );
 
       if(!response.ok){
-
         throw new Error(
           `HTTP ${response.status}`
         );
       }
 
-
       const data =
         await response.json();
-
-
-      // ------------------------------------------------------------
-      // DISPLAY TIME VALUES
-      // ------------------------------------------------------------
 
       $("pdfVerifiedTime").textContent =
         formatTrackedTime(
           data.verifiedSeconds
         );
 
-
       $("pdfRawTime").textContent =
         formatTrackedTime(
           data.rawSeconds
         );
-
 
       $("pdfAfkTime").textContent =
         formatTrackedTime(
           data.afkExcluded
         );
 
-
-      // ------------------------------------------------------------
-      // DYNAMIC ROUTINE TARGET
-      // ------------------------------------------------------------
-
       renderPdfTarget(
         data.verifiedSeconds,
         data.date
       );
 
-
-      // ------------------------------------------------------------
-      // DETERMINE WHETHER LOCAL DATA IS FRESH
-      // ------------------------------------------------------------
-
       let fresh = false;
 
       if(data.updated){
-
         const updatedDate =
-          new Date(data.updated);
+          new Date(
+            data.updated
+          );
 
         if(
           !Number.isNaN(
             updatedDate.getTime()
           )
         ){
-
           fresh =
             (
               Date.now() -
@@ -778,22 +479,18 @@ function renderPdfTarget(
         }
       }
 
-
       $("pdfReadingStatus").textContent =
         fresh
           ? "LIVE"
           : "STALE";
 
-
       $("pdfReadingUpdated").textContent =
         data.updated
           ? `Updated ${data.updated.slice(11,19)}`
           : "Update time unavailable";
-
     }
 
     catch(error){
-
       $("pdfVerifiedTime").textContent =
         "Unavailable";
 
@@ -809,16 +506,12 @@ function renderPdfTarget(
       $("pdfReadingUpdated").textContent =
         "ActivityWatch unavailable on this device";
 
-
-      // Still show today's dynamically configured target
-      // even if ActivityWatch itself is unavailable.
       renderPdfTarget(
         null,
         D.getTodayISO(
           P.settings().project.timezone
         )
       );
-
 
       console.warn(
         "PDF reading bridge unavailable:",
@@ -827,13 +520,7 @@ function renderPdfTarget(
     }
   }
 
-
-  // ====================================================================
-  // ROADMAP DATE
-  // ====================================================================
-
   function selectedDate(){
-
     return (
       $("viewDate").value ||
       D.getTodayISO(
@@ -842,13 +529,7 @@ function renderPdfTarget(
     );
   }
 
-
-  // ====================================================================
-  // MAIN RENDER
-  // ====================================================================
-
   function render(){
-
     const date =
       selectedDate();
 
@@ -882,14 +563,8 @@ function renderPdfTarget(
     const month =
       P.getMonthlyPlan(date);
 
-
-    // ------------------------------------------------------------
-    // HEADER / PHASE
-    // ------------------------------------------------------------
-
     $("dayName").textContent =
       D.weekdayName(date);
-
 
     $("dateLabel").textContent =
       D.formatDate(
@@ -901,110 +576,83 @@ function renderPdfTarget(
         }
       );
 
-
     $("yearLabel").textContent =
       year
         ? year.name
         : "3-Year Execution System";
-
 
     $("phaseName").textContent =
       phase
         ? phase.name
         : "Outside configured roadmap";
 
-
     $("phasePriority").textContent =
       phase
         ? phase.priority
         : "Review the roadmap or select a valid date.";
-
 
     $("phaseRationale").textContent =
       phase
         ? phase.rationale
         : window.OneMRoadmap.sourceNote;
 
-
     $("phaseBadge").textContent =
       phase && phase.forced
         ? "MANUAL PHASE OVERRIDE"
         : "AUTO PHASE";
 
-
-    // ------------------------------------------------------------
-    // EXAM WARNING
-    // ------------------------------------------------------------
-
     const warn =
       P.examWarning(date);
 
-
-    $("examWarning").classList.toggle(
-      "hide",
-      !warn
-    );
-
+    $("examWarning")
+      .classList.toggle(
+        "hide",
+        !warn
+      );
 
     $("examWarning").textContent =
       warn;
 
-
-    $("examBadge").classList.toggle(
-      "hide",
-      !(
-        phase &&
-        [
-          "exam-sprint",
-          "exam-window"
-        ].includes(phase.id) &&
-        !settings.exam.confirmed
-      )
-    );
-
-
-    // ------------------------------------------------------------
-    // PROJECT PROGRESS
-    // ------------------------------------------------------------
+    $("examBadge")
+      .classList.toggle(
+        "hide",
+        !(
+          phase &&
+          [
+            "exam-sprint",
+            "exam-window"
+          ].includes(phase.id) &&
+          !settings.exam.confirmed
+        )
+      );
 
     $("projectDay").textContent =
       proj.day
         ? `${proj.day} / ${proj.total}`
         : `0 / ${proj.total}`;
 
-
     $("projectPct").textContent =
       `${Math.round(proj.percent)}%`;
-
 
     $("phaseDay").textContent =
       phase
         ? `${pp.day} / ${pp.total}`
         : "—";
 
-
     $("projectProgress").style.width =
       `${proj.percent}%`;
-
 
     $("projectStartLabel").textContent =
       D.formatShort(
         settings.project.start
       );
 
-
     $("projectEndLabel").textContent =
       D.formatShort(
         settings.project.end
       );
 
-
-    // ------------------------------------------------------------
-    // NEXT MILESTONE
-    // ------------------------------------------------------------
-
     if(next){
-
       const days =
         Math.max(
           0,
@@ -1014,38 +662,27 @@ function renderPdfTarget(
           )
         );
 
-
       $("nextMilestoneDays").textContent =
         days === 0
           ? "TODAY"
           : String(days);
-
 
       $("nextMilestone").innerHTML =
         `<b>${esc(next.title)}</b><br>` +
         `<span class="muted">` +
         `${esc(D.formatShort(next.date))} • ${esc(next.detail)}` +
         `</span>`;
-
     }
 
     else {
-
       $("nextMilestoneDays").textContent =
         "—";
-
 
       $("nextMilestone").textContent =
         "No configured milestone after this date.";
     }
 
-
-    // ------------------------------------------------------------
-    // MONTHLY MISSION
-    // ------------------------------------------------------------
-
     if(month){
-
       $("monthMission").innerHTML =
         `<div class="monthMission">` +
           `<strong>${esc(month.label)}</strong>` +
@@ -1061,11 +698,9 @@ function renderPdfTarget(
             `<span>${esc(month.milestone)}</span>` +
           `</div>` +
         `</div>`;
-
     }
 
     else if(year){
-
       $("monthMission").innerHTML =
         `<div class="monthMission">` +
           `<strong>${esc(year.name)}</strong>` +
@@ -1076,11 +711,9 @@ function renderPdfTarget(
             `${esc(year.objective)}` +
           `</div>` +
         `</div>`;
-
     }
 
     else {
-
       $("monthMission").innerHTML =
         `<div class="monthMission">` +
           `<strong>Roadmap review required</strong>` +
@@ -1090,48 +723,35 @@ function renderPdfTarget(
         `</div>`;
     }
 
-
     renderRoutine(
       date,
       routine
     );
 
-
     renderTargets(
       R.weeklyTargets(phase)
     );
-
 
     renderIdeas();
     renderControls();
   }
 
-
-  // ====================================================================
-  // ROUTINE
-  // ====================================================================
-
   function renderRoutine(
     date,
     routine
   ){
-
     const saved =
       S.getRoutine(date);
-
 
     $("routineSource").textContent =
       routine.title;
 
-
     $("routineList").innerHTML =
       routine.slots.map(slot => {
-
         const checked =
           saved[slot.id]
             ? "checked"
             : "";
-
 
         return (
           `<label class="slot">` +
@@ -1157,18 +777,14 @@ function renderPdfTarget(
             `>` +
           `</label>`
         );
-
       }).join("");
-
 
     $("routineList")
       .querySelectorAll(".check")
       .forEach(cb => {
-
         cb.addEventListener(
           "change",
           () => {
-
             const state =
               S.getRoutine(date);
 
@@ -1183,31 +799,21 @@ function renderPdfTarget(
             updateScore();
           }
         );
-
       });
-
 
     updateScore();
   }
 
-
-  // ====================================================================
-  // ROUTINE SCORE
-  // ====================================================================
-
   function updateScore(){
-
     const checks = [
       ...$("routineList")
         .querySelectorAll(".check")
     ];
 
-
     const done =
       checks.filter(
         c => c.checked
       ).length;
-
 
     $("routineScore").textContent =
       checks.length
@@ -1215,13 +821,7 @@ function renderPdfTarget(
         : "";
   }
 
-
-  // ====================================================================
-  // WEEKLY TARGETS
-  // ====================================================================
-
   function renderTargets(targets){
-
     $("weeklyTargets").innerHTML =
       targets.map(
         ([a,b]) =>
@@ -1232,16 +832,9 @@ function renderPdfTarget(
       ).join("");
   }
 
-
-  // ====================================================================
-  // NOT-NOW LIST
-  // ====================================================================
-
   function renderIdeas(){
-
     const ideas =
       S.getNotNow();
-
 
     $("ideaList").innerHTML =
       ideas.length
@@ -1250,12 +843,10 @@ function renderPdfTarget(
             .reverse()
             .map(
               (idea, revIndex) => {
-
                 const idx =
                   ideas.length -
                   1 -
                   revIndex;
-
 
                 return (
                   `<div class="idea">` +
@@ -1277,22 +868,18 @@ function renderPdfTarget(
               }
             )
             .join("")
-
         : `<div class="sourceNote">` +
             `Empty is good. Keep attractive but non-priority ideas here instead of starting them.` +
           `</div>`;
-
 
     $("ideaList")
       .querySelectorAll(
         "[data-remove-idea]"
       )
       .forEach(btn => {
-
         btn.addEventListener(
           "click",
           () => {
-
             const arr =
               S.getNotNow();
 
@@ -1308,17 +895,10 @@ function renderPdfTarget(
             renderIdeas();
           }
         );
-
       });
   }
 
-
-  // ====================================================================
-  // GLOBAL CONTROLS
-  // ====================================================================
-
   function renderControls(){
-
     $("globalControls").innerHTML =
       window.OneMRoadmap.globalControls
         .map(
@@ -1329,7 +909,6 @@ function renderPdfTarget(
         )
         .join("");
 
-
     $("activeProjects").innerHTML =
       window.OneMRoadmap.activeProjects
         .map(
@@ -1339,154 +918,123 @@ function renderPdfTarget(
         .join("");
   }
 
+  $("todayBtn")
+    .addEventListener(
+      "click",
+      () => {
+        $("viewDate").value =
+          D.getTodayISO(
+            P.settings().project.timezone
+          );
 
-  // ====================================================================
-  // UI EVENTS
-  // ====================================================================
+        render();
+      }
+    );
 
-  $("todayBtn").addEventListener(
-    "click",
-    () => {
+  $("viewDate")
+    .addEventListener(
+      "change",
+      render
+    );
 
-      $("viewDate").value =
-        D.getTodayISO(
-          P.settings().project.timezone
+  $("fullscreenBtn")
+    .addEventListener(
+      "click",
+      () => {
+        if(document.fullscreenElement){
+          document.exitFullscreen?.();
+        }
+
+        else {
+          document.documentElement
+            .requestFullscreen?.();
+        }
+      }
+    );
+
+  $("resetRoutine")
+    .addEventListener(
+      "click",
+      () => {
+        S.remove(
+          `routine:${selectedDate()}`
         );
 
-      render();
-    }
-  );
-
-
-  $("viewDate").addEventListener(
-    "change",
-    render
-  );
-
-
-  $("fullscreenBtn").addEventListener(
-    "click",
-    () => {
-
-      if(document.fullscreenElement){
-
-        document.exitFullscreen?.();
-
-      } else {
-
-        document.documentElement
-          .requestFullscreen?.();
+        render();
       }
-    }
-  );
+    );
 
+  $("addIdea")
+    .addEventListener(
+      "click",
+      () => {
+        const input =
+          $("ideaInput");
 
-  $("resetRoutine").addEventListener(
-    "click",
-    () => {
+        const text =
+          input.value.trim();
 
-      S.remove(
-        `routine:${selectedDate()}`
-      );
+        if(!text){
+          return;
+        }
 
-      render();
-    }
-  );
+        const ideas =
+          S.getNotNow();
 
+        ideas.push({
+          text,
+          date: selectedDate()
+        });
 
-  $("addIdea").addEventListener(
-    "click",
-    () => {
+        S.saveNotNow(ideas);
 
-      const input =
-        $("ideaInput");
+        input.value = "";
 
-      const text =
-        input.value.trim();
-
-      if(!text){
-        return;
+        renderIdeas();
       }
+    );
 
-
-      const ideas =
-        S.getNotNow();
-
-
-      ideas.push({
-        text,
-        date: selectedDate()
-      });
-
-
-      S.saveNotNow(ideas);
-
-      input.value = "";
-
-      renderIdeas();
-    }
-  );
-
-
-  $("ideaInput").addEventListener(
-    "keydown",
-    e => {
-
-      if(e.key === "Enter"){
-        $("addIdea").click();
+  $("ideaInput")
+    .addEventListener(
+      "keydown",
+      e => {
+        if(e.key === "Enter"){
+          $("addIdea").click();
+        }
       }
-    }
-  );
-
-
-  // ====================================================================
-  // INITIALISE
-  // ====================================================================
+    );
 
   $("viewDate").value =
     D.getTodayISO(
       P.settings().project.timezone
     );
 
-
   render();
 
-
-  // Load ActivityWatch immediately.
   refreshPdfReading();
 
-
-  // Refresh every minute.
   setInterval(
     refreshPdfReading,
     60000
   );
 
-
-  // Refresh immediately when returning to the routine tab.
   document.addEventListener(
     "visibilitychange",
     () => {
-
       if(!document.hidden){
         refreshPdfReading();
       }
     }
   );
 
-
-  // ====================================================================
-  // SERVICE WORKER
-  // ====================================================================
-
   if(
     "serviceWorker" in navigator &&
     location.protocol.startsWith("http")
   ){
-
     navigator.serviceWorker
-      .register("service-worker.js")
+      .register(
+        "service-worker.js"
+      )
       .catch(() => {});
   }
-
 })();
