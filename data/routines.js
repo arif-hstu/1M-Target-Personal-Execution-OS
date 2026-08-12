@@ -55,6 +55,7 @@ window.OneMRoutines = {
         title: "HEAD TEACHER — 90 min deep study",
         detail: "Hardest topic first. One syllabus source + one question bank. No resource switching.",
         tracking: "pdf-study",
+        trackingLabel: "Morning deep study",
         targetMinMinutes: 90,
         targetMaxMinutes: 90
       },
@@ -65,6 +66,7 @@ window.OneMRoutines = {
         title: "30 min Head Teacher review",
         detail: "Recall + previous errors. Avoid passive re-reading.",
         tracking: "pdf-study",
+        trackingLabel: "Midday review",
         targetMinMinutes: 30,
         targetMaxMinutes: 30
       },
@@ -75,6 +77,7 @@ window.OneMRoutines = {
         title: "60–75 min timed questions in a permitted free block",
         detail: "If office work prevents it, do not steal employer time; recover only if practical.",
         tracking: "pdf-study",
+        trackingLabel: "Timed questions",
         targetMinMinutes: 60,
         targetMaxMinutes: 75
       },
