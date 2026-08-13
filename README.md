@@ -43,7 +43,8 @@ Therefore:
 │   ├── settings.js            # Defaults
 │   ├── roadmap.js             # Main source of truth
 │   ├── routines.js            # Phase-specific daily routines
-│   ├── blender-track.js       # Blender package/session planning data
+│   ├── blender-track.js       # Earlier package/session planning data
+│   ├── blender-reference-products.js # Current exact official reference products
 │   └── milestones.js
 ├── js/
 │   ├── date-utils.js
@@ -65,9 +66,24 @@ Therefore:
 
 ## Blender Track — future continuity rule
 
-The current Blender Track starts by building two premium manufacturer-facing proof packages: **Premium Smart Door Lock** and **Industrial Ball Valve**. The long-term strategy is **not** to keep adding random portfolio projects forever.
+The two initial package **categories remain correct**, but as of **13 Aug 2026** they are pinned to real, officially documented reference products instead of generic imagined products:
 
-After the first two packages, the operating sequence becomes:
+1. **Package 1 — Yale YDM7220 BioSecure**: Smart Mortise Lock — unofficial/self-initiated spec animation.
+2. **Package 2 — Swagelok SS-63TSW8T**: 3-Piece 60 Series Ball Valve — unofficial/self-initiated spec animation.
+
+The exact official reference links and source notes are stored in:
+
+**[`data/blender-reference-products.js`](data/blender-reference-products.js)**
+
+The visible execution page also carries those links in **`blender.html`**.
+
+### Spec-animation rule
+
+These projects are **not commissioned work**. A future AI must preserve this distinction. Brand/product names are reference identifiers only. The portfolio/case-study presentation should make clear that the work is an unofficial/self-initiated spec study and should not imply manufacturer sponsorship, approval, certification or engineering validation.
+
+Use official documentation to understand documented proportions and mechanisms, but create the Blender presentation assets yourself. Do not redistribute manufacturer CAD/manual assets inside the portfolio package.
+
+The long-term strategy is **not** to keep adding random portfolio projects forever. After the first two packages, the operating sequence becomes:
 
 ```text
 Premium proof → targeted acquisition → paid client delivery → repurpose → improve → repeat
@@ -94,7 +110,7 @@ For the full Blender operating plan, including Ariscope/Arimatic roles, premium 
 
 **[`BLENDER_FUTURE_PLAN.md`](BLENDER_FUTURE_PLAN.md)**
 
-Future AI assistants working on Blender should read that file **before changing `blender.html` or `data/blender-track.js`**.
+Future AI assistants working on Blender should read **README.md + BLENDER_FUTURE_PLAN.md + data/blender-reference-products.js** before changing `blender.html` or extending the Blender schedule. If older generic wording in `data/blender-track.js` conflicts with the exact reference-product file or the current visible `blender.html`, the **exact reference-product file and current visible page take precedence** until the dynamic data layer is consolidated.
 
 ## Deploy to GitHub Pages
 
@@ -208,8 +224,10 @@ For Blender execution changes:
 
 ```text
 blender.html
-data/blender-track.js
+data/blender-reference-products.js
 BLENDER_FUTURE_PLAN.md
 ```
+
+`data/blender-track.js` contains earlier structured planning data and should eventually be consolidated with the exact reference-product source when the Blender page becomes fully dynamic.
 
 This separation is deliberate: the roadmap is the strategic source of truth; the daily routine is generated from the active phase; and the Blender Track explains what to execute inside Blender/commercial blocks.
