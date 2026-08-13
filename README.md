@@ -38,13 +38,14 @@ Therefore:
 ├── review.html                # Weekly review + local private metrics
 ├── settings.html              # Exam date / phase overrides
 ├── BLENDER_FUTURE_PLAN.md     # Long-term Blender strategy + future AI handoff
+├── BLENDER_REFERENCE_PRODUCTS.md # Official Häfele + Kirloskar source lock
 ├── css/app.css
 ├── data/
 │   ├── settings.js            # Defaults
 │   ├── roadmap.js             # Main source of truth
 │   ├── routines.js            # Phase-specific daily routines
-│   ├── blender-track.js       # Earlier package/session planning data
-│   ├── blender-reference-products.js # Current exact official reference products
+│   ├── blender-track.js       # Structured Häfele + Kirloskar package/session plan
+│   ├── blender-reference-products.js # Official Häfele + Kirloskar reference data
 │   └── milestones.js
 ├── js/
 │   ├── date-utils.js
@@ -68,8 +69,8 @@ Therefore:
 
 The two initial package **categories remain correct**, but as of **13 Aug 2026** they are pinned to real, officially documented reference products instead of generic imagined products:
 
-1. **Package 1 — Yale YDM7220 BioSecure**: Smart Mortise Lock — unofficial/self-initiated spec animation.
-2. **Package 2 — Swagelok SS-63TSW8T**: 3-Piece 60 Series Ball Valve — unofficial/self-initiated spec animation.
+1. **Package 1 — Häfele Iconic Digital Door Lock** (article 912.21.045 right-hand / 912.21.125 left-hand): premium digital mortise-lock — unofficial/self-initiated spec animation.
+2. **Package 2 — Kirloskar Ball Valve**: industrial ball-valve product line — unofficial/self-initiated spec animation; the exact size/class/material/end-connection configuration must be locked from Kirloskar's official catalogue before detailed modelling.
 
 The exact official reference links and source notes are stored in:
 
@@ -110,7 +111,7 @@ For the full Blender operating plan, including Ariscope/Arimatic roles, premium 
 
 **[`BLENDER_FUTURE_PLAN.md`](BLENDER_FUTURE_PLAN.md)**
 
-Future AI assistants working on Blender should read **README.md + BLENDER_FUTURE_PLAN.md + data/blender-reference-products.js** before changing `blender.html` or extending the Blender schedule. If older generic wording in `data/blender-track.js` conflicts with the exact reference-product file or the current visible `blender.html`, the **exact reference-product file and current visible page take precedence** until the dynamic data layer is consolidated.
+Future AI assistants working on Blender should read **README.md + BLENDER_FUTURE_PLAN.md + BLENDER_REFERENCE_PRODUCTS.md + data/blender-reference-products.js** before changing `blender.html` or extending the Blender schedule. The Häfele + Kirloskar decision is the current source of truth; do not restore superseded product references.
 
 ## Deploy to GitHub Pages
 
@@ -228,6 +229,6 @@ data/blender-reference-products.js
 BLENDER_FUTURE_PLAN.md
 ```
 
-`data/blender-track.js` contains earlier structured planning data and should eventually be consolidated with the exact reference-product source when the Blender page becomes fully dynamic.
+`data/blender-track.js` is aligned with the Häfele + Kirloskar decision and can be used when the Blender page becomes fully dynamic.
 
 This separation is deliberate: the roadmap is the strategic source of truth; the daily routine is generated from the active phase; and the Blender Track explains what to execute inside Blender/commercial blocks.
