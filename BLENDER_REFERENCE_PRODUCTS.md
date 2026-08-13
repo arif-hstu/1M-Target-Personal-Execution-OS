@@ -2,92 +2,117 @@
 
 Updated: **13 Aug 2026**
 
-This file records the exact real products chosen for the first two Blender flagship/spec-animation packages. It prevents future AI assistants from replacing them with random generic products without evidence.
+This file records the corrected official reference targets for the first two Blender flagship/spec-animation packages. It prevents future AI assistants from restoring superseded products or inventing an unsupported product configuration.
 
 ## Decision
 
-Do **not** discard the two strategic categories (smart mortise lock + industrial ball valve). They are useful for demonstrating premium product presentation plus understandable mechanism animation.
+Keep the two strategic categories: smart digital mortise lock + industrial ball valve.
 
-Replace the generic imagined products with these exact documented reference targets:
+Use these corrected manufacturer references:
 
-1. **Yale YDM7220 BioSecure™ — Mortise Smart Lock**
-2. **Swagelok SS-63TSW8T — Stainless Steel 3-Piece 60 Series Ball Valve**
+1. **Häfele Iconic Digital Door Lock** — article **912.21.045** for right-hand opening or **912.21.125** for left-hand opening.
+2. **Kirloskar Ball Valve** — official product line; lock one catalogue-supported size/class/material/end-connection configuration during the Package 2 reference brief.
 
-Both portfolio pieces are **self-initiated/unofficial spec animations**. They are not commissioned, sponsored, approved or certified by Yale/ASSA ABLOY or Swagelok.
+Both portfolio pieces are **self-initiated/unofficial spec animations**. They are not commissioned, sponsored, approved or certified by Häfele or Kirloskar Brothers Limited.
 
 ---
 
-## Package 1 — Yale YDM7220 BioSecure
+## Package 1 — Häfele Iconic Digital Door Lock
 
 Portfolio working title:
 
-> **Smart Mortise Lock — Unofficial Spec Animation**  
-> Reference product: Yale YDM7220 BioSecure
+> **Premium Digital Door Lock — Unofficial Spec Animation**  
+> Reference product: Häfele Iconic Digital Door Lock
 
-### Official sources
+### Official source
 
-- Product page: https://www.yalehome.com/my/en/products/smart-lock/yale-home-app-smart-lock/ydm7220-biosecure
-- Official leaflet: https://www.yalehome.com/apac-blueprint/market-documents/yale-home-products/ydm7220-biosecure/leaflet/leaflet-ydm7220-biosecure-17052023.pdf
-- Official user manual: https://www.yalehome.com/my/en/product-assets/smart-lock/yale-access-app-smart-lock/ydm7220-biosecure/assets/documents/user-manual/Yale%20YDM7220%20BioSecure%20User%20Manual.pdf
+- Product page: https://home.hafeleindia.com/products/iconic-digital-door-lock
 
-### Why this exact lock
+### Why this lock
 
-The official Yale material identifies it as a mortise smart lock and provides useful exterior specifications. More importantly for the animation, the user manual labels the **front body, main body, lock case, lever, manual thumb turn, latch bolt, automatic locking sensor and dead bolt**. That gives the project a documented mechanical story instead of forcing the artist to invent a generic smart-lock mechanism.
+Häfele's official page gives a specific premium product, two orientation-specific article numbers, exterior and interior panel dimensions, door-thickness range, material/finish, access modes, locking modes and visible user-facing actions.
 
-### Accuracy note
+Documented reference facts include:
 
-The current Yale product page lists the front size as **68(W) × 335(H) × 64.5(D) mm**, while the official leaflet/manual list the front/main body as **68(W) × 335(H) × 26.5(D) mm**. Do not silently reconcile these as though they were the same measurement definition. For portfolio modelling, use the official photographs/manual/leaflet together, document the discrepancy, and avoid presenting the result as certified engineering geometry.
+- zinc-alloy exterior/interior panels,
+- antique-copper finish,
+- heavy-duty mortise lock and multiple safety bolts,
+- PIN, fingerprint, RFID card, key fob and Häfele Smart Living App access,
+- smart slider panel over the keypad,
+- auto, passage and privacy locking modes,
+- panic exit by pulling down the inside lever,
+- exterior panel: **80 × 396 × 87 mm**,
+- interior panel: **80 × 396 × 93.5 mm**,
+- supported door thickness: **40–110 mm**.
+
+### Orientation rule
+
+Choose one official article before detailed modelling:
+
+- **912.21.045** — right-hand opening
+- **912.21.125** — left-hand opening
+
+Record the chosen orientation in the brief, reference-board filename and Blender project filename.
 
 ### Animation scope
 
 Useful documented/defensible beats include:
 
 - premium exterior hero reveal,
-- fingerprint/PIN/RFID interaction visually,
-- lever movement,
-- latch-bolt/dead-bolt/lock-case explanation,
-- automatic-locking concept at a high level,
-- clean final commercial frame.
+- slider panel revealing the keypad,
+- fingerprint/PIN/RFID interaction,
+- lever action and panic-exit concept,
+- auto-locking concept at a high level,
+- premium final commercial frame.
 
-Do **not** invent undocumented internal electronic/motor architecture and present it as fact.
+Do **not** invent undocumented motor, electronics or internal mortise geometry and present it as manufacturer fact.
 
 ---
 
-## Package 2 — Swagelok SS-63TSW8T
+## Package 2 — Kirloskar Ball Valve
 
 Portfolio working title:
 
-> **3-Piece Process Ball Valve — Unofficial Spec Animation**  
-> Reference product: Swagelok SS-63TSW8T
+> **Industrial Ball Valve — Unofficial Spec Animation**  
+> Reference manufacturer/product line: Kirloskar Ball Valve
 
 ### Official sources
 
-- Product page / CAD resources: https://products.swagelok.com/en/c/2-way-straight-pattern/p/SS-63TSW8T
-- Official 60 Series catalog: https://www.swagelok.com/downloads/webcatalogs/en/ms-01-146.pdf
+- Product page: https://www.kirloskarpumps.com/valve/ball-valve
+- Product catalogue: https://www.kirloskarpumps.com/wp-content/uploads/2026/07/Ball-Valve-Catalogue.pdf
+- Installation/operation/maintenance manual: https://www.kirloskarpumps.com/wp-content/uploads/2022/12/Ball-Valve.pdf
 
-### Why this exact valve
+### Why this reference
 
-The official product page identifies SS-63TSW8T as a **stainless steel 3-piece 60 Series ball valve** with a **316 stainless steel body, reinforced PTFE seats, lever handle, 2-way straight shutoff flow pattern, 1/2 in tube socket-weld ends and swing-out design**. The same official page provides **2D, 3D CAD and sales-drawing resources**.
+Kirloskar Brothers Limited provides an official ball-valve product page, catalogue and IOM manual. The product page states that the line is designed/manufactured to **IS 9890 / BS EN ISO 17292 (BS 5351)** and tested to **BS 6755-1 / BS EN 12266 / API 598 / IS 6157**.
 
-The official 60 Series catalog documents a useful internal/component story including the **ball, stem, support rings, seats, coned-disc springs, flange seals, flanges and body fasteners**. This makes it far stronger for an exploded/cutaway technical animation than an unspecified generic valve.
+This is an official product line rather than one uniquely identified SKU. That means the artist must not combine attractive features from different catalogue variants into one unsupported model.
 
-### CAD rule
+### Configuration lock required on 13 Sep
 
-Swagelok states on the product page that its CAD template dimensions are for reference and subject to change. Use official CAD/drawings only according to the source terms and as reference for your self-created portfolio work. **Do not redistribute the vendor CAD file inside your public portfolio/download package.**
+Before detailed modelling, record one catalogue-supported combination of:
+
+- nominal size,
+- pressure class/rating,
+- body construction,
+- body/trim/seat material,
+- end connection,
+- handle or operator type.
+
+The reference brief is incomplete until those six fields and their catalogue page/source are recorded.
 
 ### Animation scope
 
-Useful beats include:
+After the configuration is locked, useful beats may include:
 
-- premium stainless-steel hero presentation,
-- quarter-turn lever/stem/ball relationship,
-- open vs closed state,
-- swing-out three-piece body concept,
-- ordered exploded/cutaway component reveal,
+- premium industrial hero presentation,
+- quarter-turn handle/stem/ball relationship,
+- open versus closed state,
+- catalogue-supported cutaway/exploded component story,
 - simplified illustrative flow path,
 - premium industrial final frame.
 
-Do not turn the portfolio film into an unsupported CFD, pressure-performance or engineering-certification claim.
+Do not make unsupported CFD, pressure-performance or engineering-certification claims. Model and animate your own portfolio assets; do not redistribute manufacturer files.
 
 ---
 
@@ -101,12 +126,13 @@ The exact wording can be shortened for the visual piece, but the meaning must re
 
 ## Future AI instruction
 
-Before changing Package 1 or Package 2, a future AI should read:
+Before changing Package 1 or Package 2, read:
 
 1. `README.md`
 2. `BLENDER_FUTURE_PLAN.md`
 3. `BLENDER_REFERENCE_PRODUCTS.md`
 4. `data/blender-reference-products.js`
 5. current `blender.html`
+6. `data/blender-track.js`
 
-Do not replace these products merely because another product looks visually interesting. Replace one only if there is a concrete reason such as unusable source documentation, licensing/usage concerns, an impossible production scope, or evidence that a different reference would materially improve client acquisition while keeping the premium product/mechanism positioning.
+The current decision is **Häfele + Kirloskar**. Do not restore superseded references. Replace either current target only when there is a concrete production, documentation, licensing or client-acquisition reason, and record that decision in every source-of-truth file.
