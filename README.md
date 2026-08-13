@@ -9,6 +9,7 @@ A self-contained, roadmap-driven GitHub Pages web app for the 3-year **Debt-free
 - Generates the daily routine from that phase.
 - Keeps the **7-day office** pattern and **Saturday recovery evening** used in the supplied routine.
 - Changes from Head Teacher exam preparation to Blender/commercial work after the exam window.
+- Includes a dedicated **Blender Track** so a Blender block says what to execute, not only how long to work.
 - Shows the first 12 months of roadmap deliverables and financial targets.
 - Shows 3-year strategic phases, focus-area timeline, milestones and cash hierarchy.
 - Stores daily checkboxes, Not-Now ideas, weekly review answers and optional private metrics in the browser only.
@@ -32,14 +33,17 @@ Therefore:
 ```text
 1M-Target-Personal-Execution-OS/
 ├── index.html                 # Dynamic Today dashboard
+├── blender.html               # Blender execution track
 ├── timeline.html              # Dynamic 3-year roadmap
 ├── review.html                # Weekly review + local private metrics
 ├── settings.html              # Exam date / phase overrides
+├── BLENDER_FUTURE_PLAN.md     # Long-term Blender strategy + future AI handoff
 ├── css/app.css
 ├── data/
 │   ├── settings.js            # Defaults
 │   ├── roadmap.js             # Main source of truth
 │   ├── routines.js            # Phase-specific daily routines
+│   ├── blender-track.js       # Blender package/session planning data
 │   └── milestones.js
 ├── js/
 │   ├── date-utils.js
@@ -58,6 +62,39 @@ Therefore:
 ├── service-worker.js
 └── .nojekyll
 ```
+
+## Blender Track — future continuity rule
+
+The current Blender Track starts by building two premium manufacturer-facing proof packages: **Premium Smart Door Lock** and **Industrial Ball Valve**. The long-term strategy is **not** to keep adding random portfolio projects forever.
+
+After the first two packages, the operating sequence becomes:
+
+```text
+Premium proof → targeted acquisition → paid client delivery → repurpose → improve → repeat
+```
+
+The priority order after strong proof exists is:
+
+1. paid client delivery,
+2. client acquisition and follow-up,
+3. improve the strongest existing proof,
+4. repurpose completed work into Ariscope / Arimatic / Shorts / digital products,
+5. create Project 3 only when commercial evidence justifies it,
+6. learn new Blender techniques only when the current work requires them.
+
+The permanent leverage rule is:
+
+> **One master production should feed client portfolio + Ariscope + Arimatic whenever possible.**
+
+A future AI must **not restart the Blender strategy from zero**. Before extending the schedule, it should first check the current date, whether Package 1 and Package 2 are actually complete, whether a paid client exists, and whether outreach evidence really justifies another speculative portfolio project.
+
+The user's quality target is premium final output, so dates are execution targets—not permission to publish weak work. Fix the highest-impact visible defects before calling a flagship package client-ready.
+
+For the full Blender operating plan, including Ariscope/Arimatic roles, premium quality gate, post-1-Oct decision logic, sales evidence, 90-minute block rules, future state machine and a ready-to-use AI continuation prompt, read:
+
+**[`BLENDER_FUTURE_PLAN.md`](BLENDER_FUTURE_PLAN.md)**
+
+Future AI assistants working on Blender should read that file **before changing `blender.html` or `data/blender-track.js`**.
 
 ## Deploy to GitHub Pages
 
@@ -167,4 +204,12 @@ For routine changes:
 data/routines.js
 ```
 
-This separation is deliberate: the roadmap is the strategic source of truth; the daily routine is generated from the active phase.
+For Blender execution changes:
+
+```text
+blender.html
+data/blender-track.js
+BLENDER_FUTURE_PLAN.md
+```
+
+This separation is deliberate: the roadmap is the strategic source of truth; the daily routine is generated from the active phase; and the Blender Track explains what to execute inside Blender/commercial blocks.
