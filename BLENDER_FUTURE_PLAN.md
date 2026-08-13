@@ -18,11 +18,13 @@ At the time this track was created, Ariscope and Arimatic already contained Blen
 
 Therefore the first objective is to create **two premium flagship packages** before making client acquisition the dominant Blender activity.
 
-## Package 1 — Premium Smart Door Lock
+## Package 1 — Häfele Iconic Digital Door Lock
 
 Target window: **13 Aug 2026 → about 10 Sep 2026**.
 
-Purpose: upgrade the existing door-latch/mechanism strength into a full manufacturer-facing product + mechanism launch package.
+Reference target: **Häfele Iconic Digital Door Lock**, article **912.21.045** (right-hand) or **912.21.125** (left-hand). Choose and record one orientation before detailed modelling.
+
+Purpose: upgrade the existing door-latch/mechanism strength into a full manufacturer-facing product + mechanism launch package. Keep the work clearly labelled as an unofficial, self-initiated spec animation and do not invent undocumented internal mortise or electronic geometry.
 
 Outputs from one master production should include:
 
@@ -38,11 +40,13 @@ Outputs from one master production should include:
 - premium stills,
 - reusable Blender source project.
 
-## Package 2 — Industrial Ball Valve
+## Package 2 — Kirloskar Ball Valve
 
 Target window: **about 13 Sep 2026 → 1 Oct 2026**.
 
-Purpose: prove that the same premium workflow transfers beyond door hardware to a broader industrial/manufacturing product.
+Reference target: the official **Kirloskar Ball Valve** product line. At the 13 Sep technical-reference session, lock one catalogue-supported size, pressure class, body construction/material, end connection and operator before detailed modelling; do not invent a hybrid configuration.
+
+Purpose: prove that the same premium workflow transfers beyond door hardware to a broader industrial/manufacturing product. Keep the work clearly labelled as an unofficial, self-initiated spec animation.
 
 Desired proof includes exterior hero presentation, handle/stem/ball mechanism, cutaway or exploded treatment, simplified open/close/flow explanation and commercial-quality final presentation.
 
