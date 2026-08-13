@@ -1,13 +1,13 @@
 window.OneMBlenderTrack = {
-  version: 1,
+  version: 2,
   principle: "Premium proof first → then evidence-backed client acquisition. One master production must serve client proof + Ariscope + Arimatic.",
   packages: [
     {
-      id: "smart-lock", number: 1, shortTitle: "Smart Door Lock",
-      title: "Premium Smart Door Lock — Product + Mechanism Launch Package",
+      id: "smart-lock", number: 1, shortTitle: "Häfele Iconic Lock",
+      title: "Häfele Iconic Digital Door Lock — Product + Mechanism Launch Package",
       start: "2026-08-13", targetEnd: "2026-09-10",
       objective: "Create the first manufacturer-facing flagship piece that proves premium modelling, materials, lighting, camera work and mechanism explanation.",
-      why: "It upgrades the existing door-latch/mechanism strength into a portfolio film a real hardware or product company could evaluate.",
+      why: "It upgrades the existing door-latch/mechanism strength into a portfolio film using Häfele Iconic as the corrected official reference target.",
       deliverables: [
         "45–60 sec premium landscape product/mechanism film",
         "15–20 sec vertical commercial cut for Arimatic",
@@ -30,11 +30,11 @@ window.OneMBlenderTrack = {
       ]
     },
     {
-      id: "industrial-valve", number: 2, shortTitle: "Industrial Ball Valve",
-      title: "Industrial Ball Valve — Technical Product Explainer Package",
+      id: "industrial-valve", number: 2, shortTitle: "Kirloskar Ball Valve",
+      title: "Kirloskar Ball Valve — Technical Product Explainer Package",
       start: "2026-09-13", targetEnd: "2026-10-01",
       objective: "Prove the premium workflow transfers beyond door hardware to industrial manufacturer work: hero product, exploded/cutaway, internal mechanism and technical explanation.",
-      why: "A valve broadens the client signal while staying inside product + mechanism communication rather than becoming another unrelated animation style.",
+      why: "A Kirloskar ball-valve reference broadens the client signal while staying inside product + mechanism communication; one catalogue-supported configuration must be locked before modelling.",
       deliverables: [
         "40–60 sec landscape technical product film",
         "Exploded/cutaway internal-parts sequence",
@@ -60,20 +60,20 @@ window.OneMBlenderTrack = {
   sessions: [
     {
       date:"2026-08-13", packageId:"smart-lock", stage:"01 — Creative brief", type:"production", minutes:90,
-      title:"Define the premium Smart Lock film before opening a modelling rabbit hole",
+      title:"Define the Häfele Iconic film before opening a modelling rabbit hole",
       goal:"Finish a one-page production brief and lock the first shot list.",
       blocks:[
-        [15,"Choose product direction","Use a premium smart/mortise lock as a neutral portfolio product. Save only form, mechanism, material and lighting references."],
-        [55,"Write the 45–60 sec shot sequence","Plan 6–8 shots: hero reveal → handle/lock detail → mechanism/opening → exploded/cutaway → feature close-ups → premium end frame."],
-        [20,"Set the quality target","Pick 3 commercial reference frames and write what makes each premium: light shape, lens, material response, composition and motion."]
+        [15,"Lock official reference","Use the Häfele Iconic official page; save exterior/interior views, dimensions, features and both orientation-specific article numbers."],
+        [55,"Write the 45–60 sec shot sequence","Plan 6–8 shots: hero reveal → slider/keypad → fingerprint/PIN/RFID → lever/panic exit → high-level auto-lock concept → premium end frame."],
+        [20,"Set orientation + quality target","Choose article 912.21.045 right-hand or 912.21.125 left-hand, then record 3 commercial quality references."]
       ],
-      doneWhen:"One brief exists with product choice, 6–8 shot list, 3 quality references and a clear final-frame concept.",
+      doneWhen:"One brief exists with official Häfele source, chosen article/orientation, 6–8 shots, 3 quality references and final-frame concept.",
       avoid:"Do not start detailed modelling tonight."
     },
     {
       date:"2026-08-16", packageId:"smart-lock", stage:"02 — Blockout", type:"production", minutes:90,
-      title:"Build the full product blockout and camera-scale test", goal:"Get the entire lock silhouette, door relationship and key moving pieces into one clean scene.",
-      blocks:[[10,"Scene setup","Units, collections, naming, reference planes and neutral door section."],[65,"Blockout","Lock body, handle, latch/bolt, trim and major internal moving pieces."],[15,"Camera test","Create hero and mechanism cameras; render low-sample previews."]],
+      title:"Build the Häfele Iconic blockout and camera-scale test", goal:"Get the exterior/interior panels, door relationship, lever and slider panel for the chosen orientation into one clean scene.",
+      blocks:[[10,"Scene setup","Units, collections, naming, official reference planes and neutral door section."],[65,"Blockout","Exterior/interior panels, lever, slider panel and visible door relationship for the chosen orientation."],[15,"Camera test","Create hero and user-action cameras; render low-sample previews."]],
       doneWhen:"The product reads correctly in hero and mechanism views even with grey materials.", avoid:"No tiny screws, fingerprints or texture painting yet."
     },
     {
@@ -84,8 +84,8 @@ window.OneMBlenderTrack = {
     },
     {
       date:"2026-08-18", packageId:"smart-lock", stage:"04 — Production model", type:"production", minutes:90,
-      title:"Turn the blockout into a clean hero-ready model", goal:"Complete visible exterior geometry and mechanism parts required by the shot list.",
-      blocks:[[10,"Topology audit","Identify close-up surfaces and moving parts."],[65,"Production model","Refine bevels, gaps, handle/trim, latch/bolt and mechanism pieces."],[15,"Close-up preview","Use a hard rim light to expose geometry problems."]],
+      title:"Turn the Häfele Iconic blockout into a clean hero-ready model", goal:"Complete visible exterior geometry and documented visible actions required by the shot list.",
+      blocks:[[10,"Topology audit","Identify close-up surfaces and documented moving parts."],[65,"Production model","Refine bevels, gaps, exterior/interior panels, lever and slider; do not invent hidden internals."],[15,"Close-up preview","Use a hard rim light to expose geometry problems."]],
       doneWhen:"Hero close-ups no longer expose obvious blockout geometry.", avoid:"Do not model invisible internals."
     },
     {
@@ -96,9 +96,9 @@ window.OneMBlenderTrack = {
     },
     {
       date:"2026-08-23", packageId:"smart-lock", stage:"06 — Mechanism animation", type:"production", minutes:90,
-      title:"Animate the lock mechanism so a client can instantly understand it", goal:"Finish clear, physically believable handle/latch/bolt motion.",
-      blocks:[[15,"Rig/constraints","Set pivots and parent relationships cleanly."],[55,"Mechanism motion","Animate handle, spindle/latch/bolt relationship with readable timing."],[20,"Camera preview","Test the motion from the mechanism camera and simplify anything confusing."]],
-      doneWhen:"A viewer can understand the core mechanism without narration.", avoid:"Do not add secondary effects that do not improve understanding."
+      title:"Animate the documented Häfele Iconic user actions", goal:"Finish clear slider/keypad, lever/panic-exit and high-level auto-lock beats without inventing internal mechanisms.",
+      blocks:[[15,"Rig/constraints","Set the documented visible-action pivots and parent relationships cleanly."],[55,"User-action motion","Animate slider/keypad reveal, lever/panic-exit and a high-level auto-lock state with readable timing."],[20,"Camera preview","Test the action sequence and remove anything that suggests unsupported internal engineering."]],
+      doneWhen:"A viewer can understand the documented user-facing actions without narration.", avoid:"Do not invent internal motor, electronics or mortise geometry."
     },
     {
       date:"2026-08-25", packageId:"smart-lock", stage:"07 — Hero camera + edit", type:"production", minutes:90,
@@ -120,20 +120,20 @@ window.OneMBlenderTrack = {
     },
     {
       date:"2026-09-08", packageId:"smart-lock", stage:"10 — Final package", type:"production", minutes:90,
-      title:"Export the Smart Lock flagship package and archive it professionally", goal:"Finish Package 1 as a client-ready proof asset.",
+      title:"Export the Häfele Iconic flagship package and archive it professionally", goal:"Finish Package 1 as a client-ready proof asset.",
       blocks:[[25,"Final gate","Run the full premium checklist."],[45,"Exports","Landscape master, vertical master, short clips and stills."],[20,"Archive","Clean project, assets, filenames and reusable setup."]],
       doneWhen:"Package 1 can be sent to a product company without explanation or apology.", avoid:"Do not start Package 2 until this is genuinely client-presentable."
     },
     {
       date:"2026-09-13", packageId:"industrial-valve", stage:"01 — Brief + technical reference", type:"production", minutes:90,
-      title:"Define the Industrial Ball Valve flagship story", goal:"Lock construction references, technical story and shot list before modelling.",
-      blocks:[[25,"Reference set","Collect reliable exterior/interior ball-valve references."],[45,"Shot list","Hero → handle rotation → internal ball/cutaway → exploded parts → open/closed/flow → end frame."],[20,"Quality target","Select 3 industrial product-film frames for lighting/material/camera reference."]],
-      doneWhen:"A technically coherent brief and shot list exist.", avoid:"Do not turn this into an engineering simulation project."
+      title:"Define the Kirloskar Ball Valve flagship story", goal:"Lock one official catalogue-supported configuration, technical story and shot list before modelling.",
+      blocks:[[25,"Configuration lock","From Kirloskar official page/catalogue/IOM, record size, class/rating, construction, materials, end connection and operator."],[45,"Shot list","Hero → handle rotation → catalogue-supported ball/cutaway → exploded parts → open/closed/flow → end frame."],[20,"Quality target","Select 3 industrial product-film frames for lighting/material/camera reference."]],
+      doneWhen:"The six configuration fields, catalogue source/page, technically coherent brief and shot list exist.", avoid:"Do not invent a hybrid valve from different catalogue variants or turn this into an engineering simulation project."
     },
     {
       date:"2026-09-15", packageId:"industrial-valve", stage:"02 — Model + materials", type:"production", minutes:90,
-      title:"Build the hero-ready valve and key internal parts", goal:"Model only what the film needs, with premium industrial surface response.",
-      blocks:[[15,"Structure","Body, ball, stem, handle, seats/seals and key fasteners."],[50,"Production geometry","Refine visible form, bores, edges and separated moving parts."],[25,"Materials","Differentiate metal, polymer/seal and coated surfaces."]],
+      title:"Build the hero-ready Kirloskar valve configuration and supported internal parts", goal:"Model only the locked catalogue-supported configuration and what the film needs.",
+      blocks:[[15,"Structure","Map body, ball, stem, operator, seats/seals and fasteners to the locked Kirloskar configuration."],[50,"Production geometry","Refine visible form, bores, edges and supported separated parts."],[25,"Materials","Match the locked catalogue material configuration; differentiate metal, polymer/seal and coated surfaces."]],
       doneWhen:"Hero and cutaway views read clearly at close range.", avoid:"No invisible manufacturing detail."
     },
     {
