@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#091018">
+  <title>1M Target — Blender Track</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brandmark">1M</span><span>1M Target<small>Personal Execution OS</small></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Today</a><a class="active" href="blender.html">Blender Track</a><a href="timeline.html">Roadmap</a><a href="review.html">Review</a><a href="settings.html">Settings</a>
+    </nav>
+  </div>
+
+  <section class="hero blenderHero">
+    <div class="heroMain">
+      <div class="eyebrow">Premium Blender Execution Track</div>
+      <h1 id="blenderHeroTitle">Loading…</h1>
+      <p id="blenderHeroText" class="muted">—</p>
+      <div class="controls">
+        <label class="field"><span class="muted" style="font-size:10px;font-weight:800">VIEW DATE</span><input type="date" id="blenderDate"></label>
+        <button class="btn primary" id="blenderTodayBtn">Today</button>
+        <a class="btn" href="index.html">← Today routine</a>
+        <button class="btn" onclick="window.print()">Print</button>
+      </div>
+    </div>
+    <div class="heroSide">
+      <div class="eyebrow">Selected Day</div>
+      <div class="big" id="blenderDayName">—</div>
+      <div class="sub" id="blenderDateLabel">—</div>
+      <div class="blenderHeroBadges" style="margin-top:12px">
+        <span class="badge good" id="blenderPhaseBadge">—</span>
+        <span class="badge" id="blenderPackageBadge">—</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card blenderNow" id="blenderNowCard">
+    <div class="blenderNowHead">
+      <div>
+        <div class="eyebrow">Do This Now</div>
+        <h2 id="todayTaskTitle" class="blenderTaskTitle">—</h2>
+        <p id="todayTaskGoal" class="muted" style="margin:0">—</p>
+      </div>
+      <div class="blenderDuration" id="todayTaskDuration">—</div>
+    </div>
+
+    <div id="taskTimeboxes" class="taskTimeboxes"></div>
+
+    <div class="grid2 blenderTaskBottom">
+      <div class="callout good"><b>DONE WHEN:</b> <span id="todayDoneWhen">—</span></div>
+      <div class="callout danger"><b>DO NOT:</b> <span id="todayAvoid">—</span></div>
+    </div>
+
+    <div class="blenderTaskActions">
+      <label class="blenderComplete"><input type="checkbox" id="todayTaskComplete"> <span>Mark this date's Blender mission complete</span></label>
+      <span id="taskSaveStatus" class="saveStatus"></span>
+    </div>
+  </section>
+
+  <div class="grid3 blenderGrid" style="margin-top:14px">
+    <section class="card wide">
+      <h2>Current Premium Package</h2>
+      <div id="packageSummary"></div>
+    </section>
+
+    <section class="card">
+      <h2>Package Progress</h2>
+      <div class="blenderProgressBig" id="packageProgressNumber">—</div>
+      <div class="progress"><span id="packageProgressBar"></span></div>
+      <div class="progressMeta"><span id="packageProgressLabel">—</span><span id="packageProgressDates">—</span></div>
+      <div class="callout" style="margin-top:12px"><b>Rule:</b> Premium proof first. Do not compensate for weak portfolio evidence with more generic proposals.</div>
+    </section>
+
+    <section class="card">
+      <h2>One Production → 3 Uses</h2>
+      <div class="leverageStack">
+        <div class="leverageItem"><b>CLIENT</b><span>Manufacturer-facing proof + service offer</span></div>
+        <div class="leverageItem"><b>ARISCOPE</b><span>Technical/mechanism explanation + Shorts</span></div>
+        <div class="leverageItem"><b>ARIMATIC</b><span>Premium vertical commercial cut, not unrelated spectacle</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <section class="card">
+      <h2>Premium Quality Gate</h2>
+      <p class="sourceNote">This is intentionally stricter than “animation finished.” A package is client-ready only when the visible commercial defects are cleared.</p>
+      <div id="premiumGate" class="premiumGate"></div>
+    </section>
+
+    <section class="card">
+      <h2>Package Deliverables</h2>
+      <div id="packageDeliverables" class="deliverableList"></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:14px">
+    <div class="trackHead">
+      <div>
+        <h2 style="margin-bottom:4px">Next Execution Sessions</h2>
+        <div class="sourceNote">Date-driven sprint. During the exam phase, production is concentrated on the existing Sun/Tue/Thu Blender evenings and Mon/Wed sales/content evenings. Friday/Saturday remain review/recovery aligned.</div>
+      </div>
+    </div>
+    <div id="upcomingSessions" class="blenderSessionList"></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2>Why These First Two Packages?</h2>
+    <div class="grid2">
+      <div class="callout good"><b>Package 1 — Smart Door Lock:</b> upgrades your existing door-latch/mechanism credibility into a product film a hardware company could actually evaluate.</div>
+      <div class="callout good"><b>Package 2 — Industrial Ball Valve:</b> proves the same premium workflow transfers to industrial manufacturers through hero visuals, mechanism, cutaway/exploded views and technical explanation.</div>
+    </div>
+    <p class="muted" style="font-size:12px;margin-bottom:0">The aim is not to become a “general 3D artist.” The aim is to show two repeatable examples of premium product + mechanism communication, then use those examples in acquisition.</p>
+  </section>
+
+  <footer class="footer">
+    <span>Premium output > upload frequency • one master production → client proof + Ariscope + Arimatic</span>
+    <span>Completion and quality-gate checks are stored only in this browser.</span>
+  </footer>
+</div>
+
+<script src="data/settings.js"></script>
+<script src="data/roadmap.js"></script>
+<script src="data/routines.js"></script>
+<script src="data/blender-track.js"></script>
+<script src="js/date-utils.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/phase-engine.js"></script>
+<script src="js/routine-engine.js"></script>
+<script src="js/blender-track.js"></script>
+</body>
+</html>
