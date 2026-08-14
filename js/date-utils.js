@@ -54,6 +54,21 @@ window.OneMDate = (function(){
     return formatDate(iso,{day:"numeric",month:"short",year:"numeric"});
   }
 
+  function formatClockText12(value){
+    const text=value == null ? "" : String(value);
+    return text.replace(
+      /\b([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?\b/g,
+      (match,hourText,minute,second,offset,whole)=>{
+        const following=whole.slice(offset+match.length);
+        if(/^\s*(?:AM|PM)\b/i.test(following)) return match;
+        const hour=Number(hourText);
+        const period=hour >= 12 ? "PM" : "AM";
+        const hour12=hour % 12 || 12;
+        return `${hour12}:${minute}${second ? `:${second}` : ""} ${period}`;
+      }
+    );
+  }
+
   function weekday(iso){
     const d=parseISODate(iso);
     return d ? d.getUTCDay() : 0;
@@ -87,5 +102,5 @@ window.OneMDate = (function(){
     return `${temp.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
   }
 
-  return {parseISODate,isoFromDate,addDays,compare,inRange,diffDays,inclusiveDays,progress,formatDate,formatShort,weekday,weekdayName,monthKey,getTodayISO,getISOWeekKey};
+  return {parseISODate,isoFromDate,addDays,compare,inRange,diffDays,inclusiveDays,progress,formatDate,formatShort,formatClockText12,weekday,weekdayName,monthKey,getTodayISO,getISOWeekKey};
 })();
