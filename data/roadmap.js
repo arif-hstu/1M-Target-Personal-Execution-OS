@@ -31,7 +31,7 @@ window.OneMRoadmap = {
   phases: [
     {
       id: "exam-sprint",
-      name: "Head Teacher Examination Sprint",
+      name: "Examination Sprint",
       start: "2026-08-07",
       end: "EXAM_START_MINUS_1",
       priority: "Head Teacher preparation remains the primary stability task while Blender monetisation continues every week.",
