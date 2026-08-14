@@ -14,7 +14,7 @@ window.OneMRoutine = (function(){
     const tpl=window.OneMRoutines.phases[phase.id];
     const day=D.weekday(date);
     const e=tpl.evenings[day] || tpl.evenings[0];
-    const evening={id:"evening",time:"20:00–21:50",label:e[0],title:e[1],detail:e[2]};
+    const evening={id:"evening",time:"8:00 PM–9:50 PM",label:e[0],title:e[1],detail:e[2]};
     const slots=[shared.wake,tpl.morning,shared.office,tpl.midday,tpl.afternoon,shared.family,evening,shared.scorecard,shared.shutdown];
     return {status:"active",title:tpl.sourceStatus,slots,evening};
   }
