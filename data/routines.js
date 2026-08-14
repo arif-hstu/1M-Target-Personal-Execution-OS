@@ -2,37 +2,37 @@ window.OneMRoutines = {
   shared: {
     wake: {
       id: "wake",
-      time: "05:45–06:10",
+      time: "5:45 AM–6:10 AM",
       title: "Wake • prayer • water • brief movement — NO browsing",
       detail: "Start without feeds, random research or messaging loops."
     },
 
     office: {
       id: "office",
-      time: "08:00–17:00",
+      time: "8:00 AM–5:00 PM",
       title: "OFFICE DUTY FIRST",
       detail: "Personal study/work only in genuinely permitted free periods. Employer responsibilities always take priority."
     },
 
     family: {
       id: "family",
-      time: "17:30–20:00",
+      time: "5:30 PM–8:00 PM",
       title: "Family • food • rest • protected family block",
       detail: "Include a 20–30 minute walk/exercise on at least five days per week."
     },
 
     scorecard: {
       id: "scorecard",
-      time: "21:50–22:00",
+      time: "9:50 PM–10:00 PM",
       title: "10-minute scorecard + prepare tomorrow's FIRST task",
       detail: "Record focused work completed. New ideas go to the Not-Now List."
     },
 
     shutdown: {
       id: "shutdown",
-      time: "22:00–22:30",
+      time: "10:00 PM–10:30 PM",
       title: "Screen-free wind-down • devices out of bed",
-      detail: "Target sleep: 22:30 → 05:45 = 7h 15m."
+      detail: "Target sleep: 10:30 PM → 5:45 AM = 7h 15m."
     }
   },
 
@@ -51,7 +51,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "deepstudy",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "HEAD TEACHER — 90 min deep study",
         detail: "Hardest topic first. One syllabus source + one question bank. No resource switching.",
         tracking: "pdf-study",
@@ -137,7 +137,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "exam-prep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "EXAM MODE — light recall / logistics only",
         detail: "Do not start new material. Follow the official exam venue and reporting time if the exam is actually scheduled today."
       },
@@ -212,7 +212,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "blender-deep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "BLENDER — deep production / portfolio / paid delivery",
         detail: "Use the former exam deep-work block to build commercial output. Paid work first; otherwise portfolio repositioning."
       },
@@ -285,7 +285,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "revenue-deep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "REVENUE DEEP WORK — paid Blender delivery or strongest portfolio proof",
         detail: "If a client deadline exists, deliver. Otherwise create the evidence needed to win the next client."
       },
@@ -358,7 +358,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "high-value-delivery",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "HIGH-VALUE BLENDER — delivery / retainer / higher-ticket work",
         detail: "Raise the value of existing capability rather than collecting new unrelated skills."
       },
@@ -431,7 +431,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "year2-deep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "REVENUE ENGINE — high-value delivery / sales asset / product",
         detail: "Year 2 is about clearing final debt and scaling pricing, products and YouTube revenue."
       },
@@ -504,7 +504,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "year3-deep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "TOP REVENUE TASK — protect the monthly net-contribution engine",
         detail: "Prioritise high-ticket client work, recurring revenue, products and efficient delivery."
       },
@@ -577,7 +577,7 @@ window.OneMRoutines = {
 
       morning: {
         id: "resilience-deep",
-        time: "06:10–07:40",
+        time: "6:10 AM–7:40 AM",
         title: "RESILIENCE — high-value work / systems / long-term asset",
         detail: "Protect earning power without turning success into uncontrolled expansion."
       },

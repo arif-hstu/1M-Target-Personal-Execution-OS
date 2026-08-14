@@ -5,6 +5,7 @@ A self-contained, roadmap-driven GitHub Pages web app for the 3-year **Debt-free
 ## What this project does
 
 - Detects the current date in **Asia/Dhaka** by default.
+- Displays every clock time in **12-hour AM/PM format**.
 - Selects the current strategic phase automatically.
 - Generates the daily routine from that phase.
 - Keeps the **7-day office** pattern and **Saturday recovery evening** used in the supplied routine.

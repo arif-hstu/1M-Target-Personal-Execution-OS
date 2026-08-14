@@ -1,4 +1,4 @@
-const CACHE = "one-m-target-v3";
+const CACHE = "one-m-target-v4";
 
 const ASSETS = [
   "./",

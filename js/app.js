@@ -486,7 +486,7 @@
 
       $("pdfReadingUpdated").textContent =
         data.updated
-          ? `Updated ${data.updated.slice(11,19)}`
+          ? `Updated ${D.formatClockText12(data.updated.slice(11,19))}`
           : "Update time unavailable";
     }
 
@@ -756,16 +756,16 @@
         return (
           `<label class="slot">` +
             `<span class="time">` +
-              `${esc(slot.time)}` +
+              `${esc(D.formatClockText12(slot.time))}` +
             `</span>` +
 
             `<span>` +
               `<div class="title">` +
-                `${esc(slot.title)}` +
+                `${esc(D.formatClockText12(slot.title))}` +
               `</div>` +
 
               `<div class="detail">` +
-                `${esc(slot.detail)}` +
+                `${esc(D.formatClockText12(slot.detail))}` +
               `</div>` +
             `</span>` +
 

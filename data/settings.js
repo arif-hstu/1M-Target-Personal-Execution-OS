@@ -15,16 +15,16 @@ window.OneMDefaults = {
   routine: {
     recoveryDay: 6,
     recoveryDayName: "Saturday",
-    wakeTime: "05:45",
-    sleepTime: "22:30",
-    officeStart: "08:00",
-    officeEnd: "17:00",
-    familyStart: "17:30",
-    familyEnd: "20:00",
-    eveningStart: "20:00",
-    eveningEnd: "21:50",
-    scorecardStart: "21:50",
-    windDownStart: "22:00"
+    wakeTime: "5:45 AM",
+    sleepTime: "10:30 PM",
+    officeStart: "8:00 AM",
+    officeEnd: "5:00 PM",
+    familyStart: "5:30 PM",
+    familyEnd: "8:00 PM",
+    eveningStart: "8:00 PM",
+    eveningEnd: "9:50 PM",
+    scorecardStart: "9:50 PM",
+    windDownStart: "10:00 PM"
   },
   privacy: {
     publicRepoSafe: true,
