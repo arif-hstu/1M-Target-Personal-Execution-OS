@@ -26,6 +26,7 @@
       <div class="controls">
         <label class="field"><span class="muted" style="font-size:10px;font-weight:800">VIEW DATE</span><input type="date" id="viewDate"></label>
         <button class="btn primary" id="todayBtn">Today</button>
+        <a class="btn primary" id="pdfReaderLink" href="http://127.0.0.1:8765/" target="_blank" rel="noopener">📚 Open PDF Reader ↗</a>
         <button class="btn" id="fullscreenBtn">Fullscreen</button>
         <button class="btn" onclick="window.print()">Print</button>
       </div>
@@ -49,7 +50,7 @@
   </section>
 
   <section class="card" id="pdfReadingCard" style="margin-bottom:14px">
-  <h2>📚 Verified PDF Study Today</h2>
+  <h2>📚 Verified PDF Study Today <a class="btn" id="pdfReaderLink2" href="http://127.0.0.1:8765/" target="_blank" rel="noopener" style="margin-left:8px;font-size:12px">Open PDF Reader ↗</a></h2>
 
   <div class="kpis">
     <div class="kpi">
@@ -169,5 +170,6 @@
 <script src="js/phase-engine.js"></script>
 <script src="js/routine-engine.js"></script>
 <script src="js/app.js"></script>
+<script>(function(){var c=(window.OneMDefaults&&window.OneMDefaults.pdfReader)||{};if(!c.url)return;["pdfReaderLink","pdfReaderLink2"].forEach(function(id){var a=document.getElementById(id);if(a)a.href=c.url;});})();</script>
 </body>
 </html>
