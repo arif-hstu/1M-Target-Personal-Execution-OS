@@ -1,4 +1,4 @@
-const CACHE = "one-m-target-v4";
+const CACHE = "one-m-target-v5-reset-2026-11-24";
 
 const ASSETS = [
   "./",
