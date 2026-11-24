@@ -28,7 +28,7 @@ window.OneMDefaults = {
   },
   pdfReader: {
     // Change this one line if your PDF reading website lives at a different address.
-    url: "http://127.0.0.1:8765/",
+    url: "http://10.231.47.1:3001/",
     label: "Open PDF Reader"
   },
   privacy: {
